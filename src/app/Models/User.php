@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class User extends Authenticatable
 {
@@ -42,20 +44,27 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function profile()
-    {
-        return $this->hasOne(Profile::class);
-    }
-    public function items()
+    public function items(): HasMany
     {
         return $this->hasMany(Item::class);
     }
-    public function purchases()
+    public function purchasesAsBuyer():HasMany
     {
         return $this->hasMany(Purchase::class, 'buyer_id');
     }
-    public function favorites()
+
+    public function salesAsSeller():HasMany
     {
-        return $this->belongsToMany(Item::class, 'favorites')->withTimestamps();
+        return $this->hasMany(Purchase::class, 'seller_id');
+    }
+    public function profile(): HasOne
+    {
+        return $this->hasOne(Profile::class);
+    }
+    public function favorites(): BelongsToMany
+    {
+        // ユーザーがお気に入りした「Item」を返す想定
+        return $this->belongsToMany(Item::class, 'favorites')
+            ->withTimestamps();
     }
 }

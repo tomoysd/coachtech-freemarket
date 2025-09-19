@@ -22,4 +22,4 @@ use App\Http\Controllers\ProfileController;
 // });
 
 Route::get('/', [ItemController::class, 'index'])->name('items.index');
-Route::get('/item/{item}', [ItemController::class, 'show'])->name('items.show');
+Route::get('/item/{item_id}', [ItemController::class, 'show'])->name('items.show');
