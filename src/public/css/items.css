@@ -1,3 +1,21 @@
+/* ========== 共通 ========== */
+.no-items {
+    padding: 16px;
+    font-size: 14px;
+    color: #666;
+}
+
+.tab-link {
+    margin-right: 12px;
+    padding: 6px 10px;
+    text-decoration: none;
+    color: #333;
+}
+.tab-link.is-active {
+    color: red;
+    font-weight: bold;
+}
+
 .item-grid {
     display: grid;
     gap: 28px; /* PCで詰まりにくい間隔 */
@@ -43,7 +61,7 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
-.item-card a {
+.item-link {
     display: block;
     color: inherit;
     text-decoration: none;
@@ -71,4 +89,7 @@
     padding: 8px;
     color: #333;
     text-align: left;
+}
+.pager {
+    margin-top: 20px;
 }

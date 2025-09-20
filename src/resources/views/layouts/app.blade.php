@@ -14,7 +14,7 @@
 <body class="bg-body">
     <header class="site-header">
         <div class="wrap header-inner">
-            <a href="{{ url('/') }}" class="logo">COACHTECH</a>
+            <a href="{{ url('https://1drv.ms/f/s!Ai8sCk_MtWsXbstSQRNgrYE61v8?e=JvjU1t') }}" class="logo"></a>
 
             <form action="{{ route('items.index') }}" method="get" class="search">
                 <input type="text" name="q" value="{{ request('q') }}" placeholder="なにをお探しですか？" class="search-input">

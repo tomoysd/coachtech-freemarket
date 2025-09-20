@@ -2,20 +2,27 @@
 
 @section('title', '商品一覧')
 
-{{-- タブ部分 --}}
 @section('tabs')
-<a href="{{ route('items.index', ['tab' => 'recommend']) }}" class="{{ request('tab','recommend')==='recommend' ? 'is-active' : '' }}">おすすめ</a>
-<a href="{{ route('items.index', ['tab' => 'mylist']) }}" class="{{ request('tab')==='mylist' ? 'is-active' : '' }}">マイリスト</a>
+<a href="{{ route('items.index', ['tab' => 'recommend']) }}"
+    class="tab-link {{ request('tab','recommend')==='recommend' ? 'is-active' : '' }}">
+    おすすめ
+</a>
+<a href="{{ route('items.index', ['tab' => 'mylist']) }}"
+    class="tab-link {{ request('tab')==='mylist' ? 'is-active' : '' }}">
+    マイリスト
+</a>
 @endsection
 
-{{-- 商品一覧 --}}
 @section('content')
+@if ($items->isEmpty())
+<p class="no-items">商品がありません。</p>
+@else
 <div class="item-grid">
-    @foreach($items as $item)
+    @foreach ($items as $item)
     <div class="item-card">
-        <a href="{{ route('items.show', $item) }}">
+        <a href="{{ route('items.show', $item) }}" class="item-link">
             <div class="item-image">
-                @if(!empty($item->image_url))
+                @if($item->image_url)
                 <img src="{{ $item->image_url }}" alt="{{ $item->title }}">
                 @elseif(!empty($item->image_path))
                 <img src="{{ asset('storage/'.$item->image_path) }}" alt="{{ $item->title }}">
@@ -28,4 +35,9 @@
     </div>
     @endforeach
 </div>
+
+<div class="pager">
+    {{ $items->withQueryString()->links() }}
+</div>
+@endif
 @endsection
