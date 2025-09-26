@@ -7,7 +7,7 @@ use App\Models\Purchase;
 use App\Models\ShippingAddress;
 use Illuminate\Http\Request;
 
-class PurchaseAddressController extends Controller
+class ShippingAddressController extends Controller
 {
     /**
      * 住所変更フォーム（購入フロー内）

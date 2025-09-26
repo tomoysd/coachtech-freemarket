@@ -4,38 +4,34 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateShippingAddressesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('shipping_addresses', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('purchase_id')->constrained()->cascadeOnDelete();
-            $table->string('recipient_name', 50);
-            $table->char('postal_code', 8);
-            $table->string('prefecture', 20);
-            $table->string('city', 50);
-            $table->string('address_line1', 100);
-            $table->string('address_line2', 100)->nullable();
+            $table->unsignedBigInteger('purchase_id')->unique();
+            $table->string('recipient_name', 255); // users.nameをコピー（編集不可）
+            $table->string('postal_code', 10);
+            $table->string('prefecture', 50);
+            $table->string('address1', 255);
+            $table->string('address2', 255)->nullable();
             $table->string('phone', 20)->nullable();
             $table->timestamps();
 
-            $table->unique('purchase_id');
+            // 外部キー制約
+            $table->foreign('purchase_id')->references('id')->on('purchases')->onDelete('cascade');
         });
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('shipping_addresses');
     }
-}
+};

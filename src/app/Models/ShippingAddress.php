@@ -10,13 +10,18 @@ class ShippingAddress extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'purchase_id',
+        'recipient_name',
+        'postal_code',
+        'prefecture',
+        'address1',
+        'address2',
+        'phone',
+    ];
+
     public function purchase()
     {
-        return $this->belongsTo(\App\Models\Purchase::class);
-    }
-
-    public function shippingAddress(): HasOne
-    {
-        return $this->hasOne(ShippingAddress::class);
+        return $this->belongsTo(Purchase::class);
     }
 }

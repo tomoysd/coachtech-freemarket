@@ -6,6 +6,8 @@ use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\PurchaseAddressController;
 use App\Http\Controllers\MypageController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ShippingAddressController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -31,8 +33,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/purchase/{item_id}',  [PurchaseController::class, 'create'])->name('purchase.create');
     Route::post('/purchase/{item_id}', [PurchaseController::class, 'store'])->name('purchase.store');
 
-    Route::get('/purchase/address/{item_id}',  [PurchaseAddressController::class, 'edit'])->name('purchase.address.edit');
-    Route::patch('/purchase/address/{item_id}',[PurchaseAddressController::class, 'update'])->name('purchase.address.update');
+    Route::get('/purchase/address/{item_id}',  [ShippingAddressController::class, 'edit'])->name('purchase.address.edit');
+    Route::patch('/purchase/address/{item_id}',[ShippingAddressController::class, 'update'])->name('purchase.address.update');
 
     Route::get('/mypage', [MypageController::class, 'index'])->name('mypage');
 

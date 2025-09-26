@@ -21,7 +21,7 @@ class ItemController extends Controller
                 return redirect()->route('login');
             }
             // お気に入り一覧（中間テーブル favorites がある前提）
-            $items = auth()->user()
+            $items = $request->user()
                 ->favorites()        // ->belongsToMany(Item::class, 'favorites') などの想定
                 ->latest('favorites.created_at')
                 ->get();
