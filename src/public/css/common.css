@@ -1,113 +1,176 @@
+/* ===== ベース幅：PCでも崩れないように固定 ===== */
 :root {
-    --black: #111;
-    --gray: #eee;
-    --line: #ddd;
-    --primary: #ee4d4d;
-    --bg: #f5f5f5;
+    --wrap-width: 1200px; /* 1400〜1540px の画面でも中央に収まる想定 */
+    --gap: 24px;
+    --border: #e9e9e9;
+    --muted: #777;
+    --gray-100: #f5f5f5;
+    --accent: #e74c3c;
 }
-* {
-    box-sizing: border-box;
-}
-body.bg-body {
-    background: #202020;
+html,
+body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans JP",
+        sans-serif;
 }
 .wrap {
-    max-width: 1240px;
+    width: min(100%, var(--wrap-width));
     margin: 0 auto;
     padding: 0 16px;
 }
-.site-header {
-    background: #000;
-    color: #fff;
+
+/* ===== グリッド：1枚目のようにカードを並べる ===== */
+.items-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* PCは4列 */
+    gap: var(--gap);
 }
-.header-inner {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 14px 0;
+
+/* 画面幅が狭くなったときの段組み調整（任意） */
+@media (max-width: 1024px) {
+    .items-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
-.logo {
-    color: #fff;
-    font-weight: 700;
+@media (max-width: 720px) {
+    .items-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* ===== 商品カード ===== */
+.item-card {
+    display: block;
     text-decoration: none;
-    letter-spacing: 0.5px;
+    color: inherit;
 }
-.search {
-    flex: 1;
-    display: flex;
-    gap: 8px;
-    justify-content: center;
+
+/* 正方形のサムネ枠を作る → 画像がはみ出さない */
+.thumb {
+    aspect-ratio: 1 / 1; /* 正方形を保証 */
+    background: var(--gray-100);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden; /* はみ出しカット */
+    display: grid;
+    place-items: center;
 }
-.search-input {
-    width: 60%;
-    min-width: 260px;
-    padding: 8px 10px;
-    border-radius: 4px;
-    border: 1px solid #444;
-    background: #fff;
+
+/* 中の画像は枠いっぱい、切り抜きは cover */
+.thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* ここが超大事！ */
+    display: block;
 }
-.search-btn {
-    padding: 8px 12px;
-    border: 1px solid #444;
-    background: #fff;
-    cursor: pointer;
+
+/* 画像がない時のダミー */
+.thumb-dummy {
+    color: var(--muted);
+    font-size: 14px;
 }
-.nav {
-    display: flex;
-    gap: 14px;
-    margin-left: auto;
+
+.item-name {
+    margin-top: 8px;
+    font-size: 14px;
 }
-.nav a {
-    color: #fff;
-    text-decoration: none;
-    opacity: 0.9;
-}
-.nav a:hover {
-    opacity: 1;
-}
-.btn-primary {
-    background: #333;
-    border: 1px solid #555;
-    border-radius: 4px;
-    padding: 6px 12px;
-}
+
+/* ===== タブの見た目（1枚目の赤線タブ風）任意 ===== */
 .tabs-bar {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
     background: #fff;
-    border-bottom: 1px solid var(--line);
 }
 .tabs {
     display: flex;
     gap: 24px;
-    padding: 10px 0;
 }
-.tabs a {
+.tab {
+    position: relative;
+    padding: 14px 2px;
     color: #666;
     text-decoration: none;
-    padding: 6px 8px;
-    border-bottom: 2px solid transparent;
 }
-.tabs a.is-active {
-    color: #e44;
-    border-color: #e44;
-    font-weight: 700;
+.tab.is-active {
+    color: var(--accent);
 }
-.flash {
-    background: #fff3cd;
-    color: #7a5d00;
-    border: 1px solid #ffe69c;
-    padding: 10px 12px;
-    margin: 12px auto;
-    border-radius: 4px;
+.tab.is-active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 2px;
+    background: var(--accent);
 }
-.main {
-    background: #f7f7f7;
-    padding: 18px;
-    border-left: 1px solid var(--line);
-    border-right: 1px solid var(--line);
-    min-height: 60vh;
+
+/* ===== Header（上部の黒帯＋検索＋右ナビ） ===== */
+.site-header {
+    background: #2c2f34; /* 黒帯 */
+    color: #fff;
 }
-.site-footer {
-    color: #aaa;
-    font-size: 12px;
-    padding: 20px 0;
+.header-inner {
+    display: grid;
+    grid-template-columns: auto 1fr auto; /* ロゴ / 検索 / 右ナビ */
+    align-items: center;
+    gap: 16px;
+    padding: 10px 0;
+}
+.logo img {
+    height: 32px;
+    width: auto;
+    display: block;
+}
+
+/* 検索フォーム */
+.search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 540px;
+    width: 100%;
+    justify-self: center;
+}
+.search-input {
+    flex: 1;
+    height: 34px;
+    padding: 0 12px;
+    border: 1px solid #8b8f94;
+    border-radius: 6px;
+    background: #f5f5f5;
+    color: #222;
+}
+.search-btn {
+    height: 34px;
+    padding: 0 12px;
+    border: 1px solid #8b8f94;
+    border-radius: 6px;
+    background: #fff;
+    color: #222;
+    cursor: pointer;
+}
+
+/* 右上ナビ */
+.nav {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+.nav a {
+    color: #fff;
+    text-decoration: none;
+}
+.btn-primary {
+    padding: 8px 14px;
+    border: 2px solid #7b61ff; /* 出品ボタンの縁色（お好みで） */
+    border-radius: 8px;
+    color: #fff;
+}
+
+/* タブ（おすすめ／マイリスト）は既存の .tabs-bar / .tab を使用 */
+
+/* 商品名（画像の下） */
+.item-name {
+    margin-top: 8px;
+    font-size: 14px;
+    color: #333; /* 黒帯の影響で白になっていた場合に備えて明示 */
 }

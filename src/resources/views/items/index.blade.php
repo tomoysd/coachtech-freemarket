@@ -17,23 +17,21 @@
 @if ($items->isEmpty())
 <p class="no-items">商品がありません。</p>
 @else
-<div class="item-grid">
-    @foreach ($items as $item)
-    <div class="item-card">
-        <a href="{{ route('items.show', $item) }}" class="item-link">
-            <div class="item-image">
+<div class="wrap">
+    <div class="items-grid">
+        @foreach ($items as $item)
+        <a href="{{ route('items.show', $item) }}" class="item-card">
+            <div class="thumb">
                 @if($item->image_url)
                 <img src="{{ $item->image_url }}" alt="{{ $item->title }}">
-                @elseif(!empty($item->image_path))
-                <img src="{{ asset('storage/'.$item->image_path) }}" alt="{{ $item->title }}">
                 @else
-                <div class="placeholder">商品画像</div>
+                <span class="thumb-dummy">商品画像</span>
                 @endif
             </div>
-            <div class="item-title">{{ $item->title }}</div>
+            <div class="item-name">{{ $item->title }}</div>
         </a>
+        @endforeach
     </div>
-    @endforeach
 </div>
 
 <div class="pager">
