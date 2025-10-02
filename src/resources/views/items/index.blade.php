@@ -7,8 +7,8 @@
     class="tab-link {{ request('tab','recommend')==='recommend' ? 'is-active' : '' }}">
     おすすめ
 </a>
-<a href="{{ route('items.index', ['tab' => 'mylist']) }}"
-    class="tab-link {{ request('tab')==='mylist' ? 'is-active' : '' }}">
+<a href="{{ route('items.index', ['tab' => '/?tab=mylist']) }}"
+    class="tab-link {{ request('tab')==='/?tab=mylist' ? 'is-active' : '' }}">
     マイリスト
 </a>
 @endsection

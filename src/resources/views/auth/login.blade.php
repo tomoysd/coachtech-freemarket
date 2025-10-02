@@ -1,24 +1,40 @@
-@extends('layouts.app')
+@extends('layouts.auth')
 
 @section('title', 'ログイン')
 
 @section('content')
-<div class="auth-container">
-    <h1>ログイン</h1>
+<div class="auth-card">
+    <h1 class="auth-title">ログイン</h1>
 
-    <form method="POST" action="{{ route('login') }}">
+    {{-- バリデーションエラー表示（任意） --}}
+    @if ($errors->any())
+    <div class="auth-errors">
+        <ul>
+            @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
+
+    <form method="POST" action="{{ route('login') }}" class="auth-form">
         @csrf
-        <div class="form-group">
+
+        <div class="auth-form_row">
             <label for="email">メールアドレス</label>
             <input id="email" type="email" name="email" required autofocus>
         </div>
 
-        <div class="form-group">
+        <div class="auth-form_row">
             <label for="password">パスワード</label>
             <input id="password" type="password" name="password" required>
         </div>
 
-        <button type="submit">ログイン</button>
+        <button type="submit" class="auth-submit">ログインする</button>
     </form>
+
+    <div class="auth-link">
+        <a href="{{ route('register') }}">会員登録はこちら</a>
+    </div>
 </div>
 @endsection

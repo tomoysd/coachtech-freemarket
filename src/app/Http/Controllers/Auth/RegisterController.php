@@ -34,12 +34,12 @@ class RegisterController extends Controller
         // === 遷移先の制御 ===
         // 1) メール認証機能を使う場合：認証案内画面へ
         // 2) 使わない場合：プロフィール設定画面へ
-        if (method_exists($user, 'hasVerifiedEmail')) {
-            // User に MustVerifyEmail を付けていれば true
-            if (! $user->hasVerifiedEmail()) {
-                return redirect()->route('verification.notice'); // /email/verify
-            }
-        }
+        // if (method_exists($user, 'hasVerifiedEmail')) {
+        //     // User に MustVerifyEmail を付けていれば true
+        //     if (! $user->hasVerifiedEmail()) {
+        //         return redirect()->route('verification.notice'); // /email/verify
+        //     }
+        // }
 
         return redirect()->route('profile.edit');
     }

@@ -57,10 +57,16 @@ body {
 .auth-form {
     max-width: 600px; /* 入力欄/ボタンの基準幅 */
     margin: 0 auto; /* カード中央に揃える */
+    display: grid; 
+    grid-auto-rows: max-content; /* ← 追加：高さの自動計算 */
+    row-gap: 28px;
 }
 
-.auth-form .form-row {
+.auth-form .form-row  {
     margin-bottom: 18px;
+}
+.auth-form_row{
+    margin: 0;
 }
 .auth-form label {
     display: block;
@@ -99,7 +105,7 @@ body {
     display: block;
     width: 100%; /* ← 入力欄と同じ長さ */
     height: 44px;
-    margin: 26px 0 0;
+    margin: 0;
     border: none;
     border-radius: 3px;
     background: #e60012;
@@ -115,11 +121,14 @@ body {
 /* 下部リンク */
 .auth-link {
     text-align: center;
-    margin-top: 14px;
+    margin-top: 28px;
 }
 .auth-link a {
     color: #3880ff;
     text-decoration: none;
+}
+.auth-link a:hover {
+    text-decoration: underline;
 }
 
 /* フラッシュ */
