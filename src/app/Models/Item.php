@@ -39,4 +39,23 @@ class Item extends Model
         return $this->belongsToMany(User::class, 'favorites')
             ->withTimestamps();
     }
+
+    // コメント
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    // いいね（中間：favorites）
+    public function likes()
+    {
+        return $this->belongsToMany(User::class, 'favorites')
+            ->withTimestamps();
+    }
+
+    // 複数カテゴリ想定
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class);
+    }
 }

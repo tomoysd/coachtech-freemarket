@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\LikeController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\MypageController;
 use App\Http\Controllers\ProfileController;
@@ -23,6 +25,8 @@ Route::view('/login', 'auth.login')->name('login');
 // 以降はログイン必須
 Route::middleware('auth')->group(function () {
 
+    Route::post('/item/{item_id}/like', [LikeController::class, 'toggle'])->name('items.like.toggle');
+    Route::post('/item/{item_id}/comments', [CommentController::class, 'store'])->name('items.comments.store');
     // 出品
     Route::get('/sell',  [ItemController::class, 'create'])->name('items.create');
     Route::post('/sell', [ItemController::class, 'store'])->name('items.store');

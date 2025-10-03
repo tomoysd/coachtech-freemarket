@@ -38,7 +38,22 @@ class ItemController extends Controller
      */
     public function show(Item $item)
     {
-        return view('items.show', compact('item'));
+        $comments = $item->comments()->with('user')->latest()->get();
+
+        // いいね数
+        $likesCount = $item->likes()->count();
+
+        // 自分がいいね済みか
+        $likedByMe = auth()->check()
+            ? $item->likes()->where('user_id', auth()->id())->exists()
+            : false;
+
+        // カテゴリ（単一/複数どちらでも拾えるように）
+        $categories = method_exists($item, 'categories')
+            ? $item->categories
+            : collect($item->category ? [$item->category] : []);
+
+        return view('items.show', compact('item', 'comments', 'likesCount', 'likedByMe', 'categories'));
     }
 
     /**
