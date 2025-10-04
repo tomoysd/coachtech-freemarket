@@ -11,19 +11,29 @@ class Purchase extends Model
 {
     use HasFactory;
 
-    public function item():BelongsTo
+    protected $fillable = ['user_id', 'item_id', 'price', 'payment_method'];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function item(): BelongsTo
     {
         return $this->belongsTo(\App\Models\Item::class);
     }
-    public function buyer():BelongsTo
+
+    public function buyer(): BelongsTo
     {
         return $this->belongsTo(\App\Models\User::class, 'buyer_id');
     }
-    public function seller():BelongsTo
+
+    public function seller(): BelongsTo
     {
         return $this->belongsTo(\App\Models\User::class, 'seller_id');
     }
-    public function shippingAddress():HasOne
+
+    public function shippingAddress(): HasOne
     {
         return $this->hasOne(\App\Models\ShippingAddress::class);
     }

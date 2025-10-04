@@ -9,7 +9,7 @@ class LikeController extends Controller
 {
     public function toggle($item_id)
     {
-        $item = \App\Models\Item::findOrFail($item_id);
+        $item = Item::findOrFail($item_id);
         $user = auth()->user();
 
         // favorites（user_id, item_id のユニーク）想定
