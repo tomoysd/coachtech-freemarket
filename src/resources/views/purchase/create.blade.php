@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
-@section('css')
+@push('head')
 <link rel="stylesheet" href="{{ asset('css/purchase.css') }}">
-@endsection
+@endpush
 
 @section('content')
 <div class="purchase-container">

@@ -25,6 +25,10 @@
                 @if($item->image_url)
                 <img src="{{ $item->image_url }}" alt="{{ $item->title }}">
                 @else
+                {{-- ここで購入済み判定 --}}
+                @if($item->purchase)
+                <div class="sold-badge">SOLD</div>
+                @endif
                 <span class="thumb-dummy">商品画像</span>
                 @endif
             </div>

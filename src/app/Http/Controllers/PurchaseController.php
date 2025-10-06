@@ -4,89 +4,100 @@ namespace App\Http\Controllers;
 
 use App\Models\Item;
 use App\Models\Purchase;
-use App\Models\ShippingAddress; // ★ 追加：配送先モデルを利用
+use App\Models\ShippingAddress;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class PurchaseController extends Controller
 {
-    /**
-     * 購入確認画面
-     */
-    public function create(Item $item)
+    // 購入画面
+    public function create(Request $request, $item_id)
     {
-        // 既に売却済みなら戻す
-        if ($item->status === 'sold') {
-            return redirect()
-                ->route('items.show', $item)
-                ->with('message', 'この商品は売り切れです。');
+        $item = Item::findOrFail($item_id);
+        $user = Auth::user();
+
+        // 支払い方法（GETで反映：?payment_method=...）※JSなし対応
+        $paymentMethod = $request->query('payment_method');
+
+        // 住所：セッションに一時保存があればそれを表示。なければプロフィールから初期値。
+        $sessionKey = "shipping_address.$item_id";
+        $addr = session($sessionKey);
+        if (!$addr) {
+            $p = $user->profile; // プロフィール前提（postal_code/prefecture/address1/address2/phone）
+            $addr = [
+                'recipient_name' => $user->name ?? '',
+                'postal_code'    => $p->postal_code ?? '',
+                'prefecture'     => $p->prefecture ?? '',
+                'address1'       => $p->address1 ?? '',
+                'address2'       => $p->address2 ?? '',
+                'phone'          => $p->phone ?? '',
+            ];
         }
 
+        $shipping = (object)$addr;
+
         return view('purchase.create', [
-            'item' => $item,
-            // ※必要ならプロフィールのデフォルト住所を画面に出す（任意）
-            // 'defaultAddress' => optional(auth()->user()->profile),
+            'item'           => $item,
+            'shipping'      => $shipping,
+            'paymentMethod'  => $paymentMethod,
         ]);
     }
 
-    /**
-     * 購入処理
-     */
-    public function store(Request $request, Item $item)
+    // 購入確定
+    public function store(Request $request, $item_id)
     {
-        // ここに支払い/配送のバリデーション（必要に応じて）
         $request->validate([
-            // 例） 'agree' => ['accepted'],
+            'payment_method' => ['required','in:convenience_store,credit_card'],
+        ], [
+            'payment_method.required' => '支払い方法を選択してください。',
         ]);
 
-        if ($item->status === 'sold') {
-            return back()->with('message', 'この商品は売り切れです。');
+        $user = Auth::user();
+        $item = Item::findOrFail($item_id);
+
+        // 既に誰かが購入していないか（1件でもあれば sold）
+        $already = Purchase::where('item_id', $item->id)->exists();
+        if ($already) {
+            return redirect('/')->with('error', 'この商品はすでに購入されています。');
         }
 
-        // 1商品1取引にするためトランザクションで確定
-        return DB::transaction(function () use ($item) {
+        // 住所（セッション → なければプロフィール）
+        $sessionKey = "shipping_address.$item_id";
+        $addr = session($sessionKey);
+        if (!$addr) {
+            $p = $user->profile;
+            $addr = [
+                'recipient_name' => $user->name ?? '',
+                'postal_code'    => $p->postal_code ?? '',
+                'prefecture'     => $p->prefecture ?? '',
+                'address1'       => $p->address1 ?? '',
+                'address2'       => $p->address2 ?? '',
+                'phone'          => $p->phone ?? '',
+            ];
+        }
 
-            // ---- 1) purchases を作成（既存ロジック）----
+        DB::transaction(function () use ($user, $item, $addr) {
+            // purchases 登録（仕様書カラムに一致）
             $purchase = Purchase::create([
-                'item_id'         => $item->id,
-                'buyer_id'        => auth()->id(),
-                'seller_id'       => $item->user_id,
-                'amount'          => $item->price,
-                'payment_status'  => 'paid',
-                'order_status'    => 'pending',
-                'purchased_at'    => now(),
+                'user_id'      => $user->id,
+                'item_id'      => $item->id,
+                'amount'       => $item->price,      // 当時の価格
+                'status'       => 1,                 // 1:購入済（tinyint）
+                'purchased_at' => Carbon::now(),
             ]);
 
-            // ---- 2) プロフィールの住所をコピーして shipping_addresses を作成（★ 追加）----
-            $user = auth()->user();
-            $profile = $user->profile; // ユーザーのデフォルト住所
-
-            // プロフィール未登録時はエラーにしたい場合は例外を投げる
-            if (!$profile) {
-                // ※要件に合わせてハンドリング（ここでは例外→ロールバック）
-                throw new \RuntimeException('プロフィールに住所が登録されていません。');
-            }
-
-            ShippingAddress::create([
-                'purchase_id'    => $purchase->id,
-                'recipient_name' => $user->name,           // ユーザー名をコピー（編集不可）
-                'postal_code'    => $profile->postal_code, // 以降、プロフィールの住所をコピー
-                'prefecture'     => $profile->prefecture,
-                'address1'       => $profile->address1,
-                'address2'       => $profile->address2,
-                'phone'          => $profile->phone,
-            ]);
-
-            // ---- 3) 商品を売却済みに更新（既存ロジック）----
-            $item->update([
-                'status'  => 'sold',
-                'sold_at' => now(),
-            ]);
-
-            // ---- 4) 正常終了 ----
-            return redirect()
-                ->route('mypage')
-                ->with('message', '購入が完了しました');
+            // shipping_addresses 登録（purchase_idで紐づく）
+            ShippingAddress::create(array_merge($addr, [
+                'purchase_id' => $purchase->id,
+            ]));
         });
+
+        // 住所の一時データは破棄
+        session()->forget($sessionKey);
+
+        // 遷移先：商品一覧（要件2-4）
+        return redirect('/')->with('message', '購入が完了しました。');
     }
 }

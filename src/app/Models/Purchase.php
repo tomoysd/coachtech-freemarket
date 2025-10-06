@@ -11,30 +11,28 @@ class Purchase extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'item_id', 'price', 'payment_method'];
+    protected $fillable = [
+        'user_id',
+        'item_id',
+        'amount',
+        'status',
+        'purchased_at',
+    ];
+
+    protected $casts = [
+        'purchased_at' => 'datetime',
+    ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
-
-    public function item(): BelongsTo
+    public function item()
     {
-        return $this->belongsTo(\App\Models\Item::class);
+        return $this->belongsTo(Item::class);
     }
-
-    public function buyer(): BelongsTo
+    public function shippingAddress()
     {
-        return $this->belongsTo(\App\Models\User::class, 'buyer_id');
-    }
-
-    public function seller(): BelongsTo
-    {
-        return $this->belongsTo(\App\Models\User::class, 'seller_id');
-    }
-
-    public function shippingAddress(): HasOne
-    {
-        return $this->hasOne(\App\Models\ShippingAddress::class);
+        return $this->hasOne(ShippingAddress::class);
     }
 }

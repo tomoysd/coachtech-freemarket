@@ -13,17 +13,14 @@ return new class extends Migration
     {
         Schema::create('shipping_addresses', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('purchase_id')->unique();
-            $table->string('recipient_name', 255); // users.nameをコピー（編集不可）
+            $table->foreignId('purchase_id')->constrained('purchases')->cascadeOnDelete(); // purchases(id)
+            $table->string('recipient_name', 255);
             $table->string('postal_code', 10);
             $table->string('prefecture', 50);
             $table->string('address1', 255);
             $table->string('address2', 255)->nullable();
             $table->string('phone', 20)->nullable();
             $table->timestamps();
-
-            // 外部キー制約
-            $table->foreign('purchase_id')->references('id')->on('purchases')->onDelete('cascade');
         });
     }
 

@@ -98,7 +98,6 @@
    Detail page
    ========================= */
 
-
 .item-detail {
     background: #f7f7f7;
     padding: 24px 0 64px;
@@ -370,4 +369,16 @@
     .item-detail__panel-card {
         min-height: auto;
     }
+}
+.sold-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: rgba(230, 0, 18, 0.9);
+    color: #fff;
+    font-weight: bold;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    text-transform: uppercase;
 }
