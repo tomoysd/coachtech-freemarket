@@ -11,6 +11,7 @@
 
     <form action="{{ route('profile.update') }}" method="post" class="auth-form">
         @csrf
+        @method('PATCH')
         <div class="form-row">
             <label for="name">ユーザー名</label>
             <input id="name" name="name" type="text" value="{{ old('name', $user->name) }}">

@@ -1,50 +1,51 @@
 @extends('layouts.app')
 
+@push('head')
+<link rel="stylesheet" href="{{ asset('css/purchase.css') }}">
+@endpush
+
+@section('title', '送付先住所変更画面')
+
 @section('content')
-<div class="container" style="max-width:720px;margin:40px auto;">
-    <h2>配送先の変更</h2>
+<div class="address-edit">
+    <h1 class="address-edit__title">住所の変更</h1>
 
-    <form method="POST" action="{{ route('shipping.update', ['item_id' => $item->id]) }}">
-        @method('PATCH')
+    @if ($errors->any())
+    <div class="form-alert form-alert--danger">
+        <ul>
+            @foreach ($errors->all() as $message)
+            <li>{{ $message }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
+
+    <form class="address-edit__form" method="POST" action="{{ route('purchase.address.update', $item) }}">
         @csrf
+        @method('PATCH')
 
-        <div class="form-group">
-            <label>受取人氏名</label>
-            <input type="text" name="recipient_name" value="{{ old('recipient_name', $address->recipient_name) }}">
-            @error('recipient_name')<p class="form-error">{{ $message }}</p>@enderror
+        <div class="form-row">
+            <label class="form-label" for="postal_code">郵便番号</label>
+            <input id="postal_code" name="postal_code" type="text" class="form-input"
+                value="{{ old('postal_code', $draft->postal_code ?? '') }}" placeholder="">
         </div>
 
-        <div class="form-group">
-            <label>郵便番号</label>
-            <input type="text" name="postal_code" value="{{ old('postal_code', $address->postal_code) }}">
-            @error('postal_code')<p class="form-error">{{ $message }}</p>@enderror
+        <div class="form-row">
+            <label class="form-label" for="address">住所</label>
+            <input id="address" name="address" type="text" class="form-input"
+                value="{{ old('address', $draft->address ?? '') }}" placeholder="">
         </div>
 
-        <div class="form-group">
-            <label>都道府県</label>
-            <input type="text" name="prefecture" value="{{ old('prefecture', $address->prefecture) }}">
-            @error('prefecture')<p class="form-error">{{ $message }}</p>@enderror
+        <div class="form-row">
+            <label class="form-label" for="building">建物名</label>
+            <input id="building" name="building" type="text" class="form-input"
+                value="{{ old('building', $draft->building ?? '') }}" placeholder="">
         </div>
 
-        <div class="form-group">
-            <label>住所1</label>
-            <input type="text" name="address1" value="{{ old('address1', $address->address1) }}">
-            @error('address1')<p class="form-error">{{ $message }}</p>@enderror
+        <div class="form-actions">
+            <button type="submit" class="btn btn--primary">更新する</button>
         </div>
-
-        <div class="form-group">
-            <label>住所2</label>
-            <input type="text" name="address2" value="{{ old('address2', $address->address2) }}">
-            @error('address2')<p class="form-error">{{ $message }}</p>@enderror
-        </div>
-
-        <div class="form-group">
-            <label>電話番号</label>
-            <input type="text" name="phone" value="{{ old('phone', $address->phone) }}">
-            @error('phone')<p class="form-error">{{ $message }}</p>@enderror
-        </div>
-
-        <button type="submit">保存して戻る</button>
     </form>
 </div>
 @endsection
+

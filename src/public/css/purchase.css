@@ -112,3 +112,110 @@
 .summary-box .row:last-child {
     border-bottom: none;
 }
+
+/* 住所編集画面 */
+:root {
+    --form-width: 680px; /* 入力欄とボタンの幅 */
+    --control-h: 45px; /* 入力欄とボタンの高さ */
+    --row-gap: 24px; /* 各行の等間隔 */
+}
+
+.address-edit {
+    max-width: 760px;
+    margin: 48px auto;
+    background: #fff;
+    padding: 24px 0 40px;
+}
+.address-edit__title {
+    text-align: center;
+    font-size: 20px;
+    margin-bottom: 24px;
+}
+.address-edit__form {
+    max-width: var(--form-width);
+    width: 100%;
+    margin: 0 auto; /* 中央寄せ */
+    display: flex;
+    flex-direction: column;
+    gap: var(--row-gap); /* ← これで等間隔を実現 */
+}
+.form-row {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.form-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+.form-input {
+    box-sizing: border-box;
+    width: 100%;
+    height: var(--control-h);
+    border: 1px solid #ccc;
+    padding: 0 12px;
+    font-size: 14px;
+    outline: none;
+}
+
+.form-actions {
+    margin-top: var(--row-gap);
+    text-align: center;
+}
+.btn {
+    display: inline-block;
+    border: none;
+    cursor: pointer;
+}
+.btn--primary {
+    width: 100%; /* 入力欄と同じ長さ */
+    height: var(--control-h); /* 入力欄と同じ高さ */
+    background: #e84545;
+    color: #fff;
+    font-weight: 600;
+}
+@media (max-width: 760px) {
+    .address-edit {
+        padding: 16px;
+    }
+    .address-edit__form {
+        max-width: 100%;
+    }
+}
+
+.form-alert {
+    margin-bottom: 20px;
+    padding: 12px 14px;
+    border-radius: 4px;
+}
+.form-alert--danger {
+    background: #ffecec;
+}
+.form-alert--success {
+    background: #e8fff2;
+}
+
+/* 購入画面の住所表示 */
+.checkout-address {
+    border: 1px solid #ddd;
+    padding: 16px;
+    border-radius: 4px;
+    margin: 16px 0 24px;
+    background: #fff;
+}
+.checkout-address__row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+.checkout-address__row:last-child {
+    border-bottom: none;
+}
+.checkout-address__edit {
+    display: inline-block;
+    margin-top: 10px;
+    text-decoration: underline;
+}

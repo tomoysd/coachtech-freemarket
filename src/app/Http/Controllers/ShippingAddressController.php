@@ -29,7 +29,7 @@ class ShippingAddressController extends Controller
             ];
         }
 
-        return view('shipping.edit', [
+        return view('purchase.address.edit', [
             'item'    => $item,
             'address' => (object)$addr,
         ]);
