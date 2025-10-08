@@ -47,20 +47,17 @@ class User extends Authenticatable
 
     public function items(): HasMany
     {
-        return $this->hasMany(Item::class);
-    }
-    public function purchasesAsBuyer():HasMany
-    {
-        return $this->hasMany(Purchase::class, 'buyer_id');
+        return $this->hasMany(Item::class, 'user_id');
     }
 
-    public function salesAsSeller():HasMany
+    public function purchases() // ← 購入したレコード（purchases.user_id が購入者）
     {
-        return $this->hasMany(Purchase::class, 'seller_id');
+        return $this->hasMany(Purchase::class, 'user_id');
     }
+
     public function profile(): HasOne
     {
-        return $this->hasOne(Profile::class);
+        return $this->hasOne(Profile::class, 'user_id');
     }
     public function favorites(): BelongsToMany
     {

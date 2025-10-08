@@ -5,8 +5,17 @@
 <div class="auth-card">
     <h1 class="auth-title">プロフィール設定</h1>
 
+    <div class="mp-avatar">
+        @php $avatar = optional($user->profile)->avatar_path; @endphp
+        @if($avatar)
+        <img src="{{ asset($avatar) }}" alt="プロフィール画像">
+        @else
+        <div class="avatar-ph"></div>
+        @endif
+    </div>
+
     @if(session('message'))
-        <div class="auth-flash">{{ session('message') }}</div>
+    <div class="auth-flash">{{ session('message') }}</div>
     @endif
 
     <form action="{{ route('profile.update') }}" method="post" class="auth-form">

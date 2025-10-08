@@ -31,6 +31,25 @@ body {
     display: block;
 }
 
+.mp-header {
+    display: grid;
+    grid-template-columns: 96px 1fr;
+    gap: 24px;
+    align-items: center;
+    padding: 24px 0 16px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.mp-avatar img,
+.avatar-ph {
+    width: 96px;
+    height: 96px;
+    border-radius: 9999px;
+    background: #e5e5e5;
+    display: block;
+    object-fit: cover;
+}
+
 /* ===== メイン＆カード ===== */
 .auth-main {
     min-height: calc(100dvh - 56px);
