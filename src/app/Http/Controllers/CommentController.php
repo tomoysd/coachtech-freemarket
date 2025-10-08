@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Requests\CommentStoreRequest;
+use App\Http\Requests\CommentRequest;
 use App\Models\Item;
 
 
 class CommentController extends Controller
 {
-    public function store(CommentStoreRequest $request, Item $item)
+    public function store(CommentRequest $request, Item $item)
     {
         $item->comments()->create([
             'user_id' => $request->user()->id,
