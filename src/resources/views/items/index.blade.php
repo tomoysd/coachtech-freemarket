@@ -7,23 +7,27 @@
     class="tab-link {{ request('tab','recommend')==='recommend' ? 'is-active' : '' }}">
     おすすめ
 </a>
-<a href="{{ route('items.index', ['tab' => '/?tab=mylist']) }}"
-    class="tab-link {{ request('tab')==='/?tab=mylist' ? 'is-active' : '' }}">
+<a href="{{ route('items.index', ['tab' => 'mylist']) }}"
+    class="tab-link {{ request('tab')==='mylist' ? 'is-active' : '' }}">
     マイリスト
 </a>
 @endsection
 
 @section('content')
+@if ($items instanceof \Illuminate\Contracts\Pagination\Paginator && $items->isEmpty())
+<p class="no-items">商品がありません。</p>
+@elseif (is_array($items) || $items instanceof \Illuminate\Support\Collection)
 @if ($items->isEmpty())
 <p class="no-items">商品がありません。</p>
-@else
+@endif
+@endif
 <div class="wrap">
     <div class="items-grid">
         @foreach ($items as $item)
         <a href="{{ route('items.show', $item) }}" class="item-card">
             <div class="thumb">
-                @if($item->image_url)
-                <img src="{{ $item->image_url }}" alt="{{ $item->title }}">
+                @if(!empty ($item->image_url) || !empty($item->image_path))
+                <img src="{{ $item->image_url ?? asset('storage/'.$item->image_path) }}" alt="{{ $item->title }}">
                 @else
                 {{-- ここで購入済み判定 --}}
                 @if($item->purchase)
@@ -38,6 +42,7 @@
     </div>
 </div>
 
+@if ($items instanceof \Illuminate\Contracts\Pagination\Paginator)
 <div class="pager">
     {{ $items->withQueryString()->links() }}
 </div>

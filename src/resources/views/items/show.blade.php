@@ -53,7 +53,7 @@
 
                     {{-- 購入導線 --}}
                     @auth
-                    <a class="item-detail__cta" href="{{ route('purchase.create', $item) }}">購入手続きへ</a>
+                    <a class="item-detail__cta" href="{{ route('purchase.create', ['item_id' => $item->id]) }}">購入手続きへ</a>
                     @else
                     <a class="item-detail__cta" href="{{ route('login') }}">購入手続きへ</a>
                     @endauth>
@@ -116,7 +116,7 @@
                     @auth
                     <section class="item-detail__section">
                         <h3 class="item-detail__section-title--sub">商品のコメント</h3>
-                        <form action="{{ route('items.comments.store', $item) }}" method="POST" class="item-detail__comment-form">
+                        <form action="{{ route('items.comments.store', ['item_id' => $item->id]) }}" method="POST" class="item-detail__comment-form">
                             @csrf
                             <textarea name="body" class="item-detail__textarea" rows="4" placeholder="コメントを書いてください">{{ old('body') }}</textarea>
                             @error('body') <p class="item-detail__error">{{ $message }}</p> @enderror
