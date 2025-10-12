@@ -7,9 +7,8 @@ use Illuminate\Http\Request;
 
 class LikeController extends Controller
 {
-    public function toggle($item_id)
+    public function toggle(Item $item)
     {
-        $item = Item::findOrFail($item_id);
         $user = auth()->user();
 
         // favorites（user_id, item_id のユニーク）想定

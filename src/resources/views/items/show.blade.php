@@ -15,7 +15,7 @@
             <div class="item-detail__media">
                 @php $imageUrl = $item->image_url ?? null; @endphp
                 @if ($imageUrl)
-                <img src="{{ asset($imageUrl) }}" alt="{{ $item->title ?? $item->name ?? '商品画像' }}">
+                <img src="{{ $imageUrl }}" alt="{{ $item->title ?? $item->name ?? '商品画像' }}">
                 @else
                 <div class="item-detail__image--placeholder">商品画像</div>
                 @endif
@@ -33,7 +33,7 @@
 
                         <div class="item-detail__stats">
                             @auth
-                            <form action="{{ route('items.like.toggle', ['item_id' => $item->id]) }}" method="POST">
+                            <form action="{{ route('items.like.toggle', $item) }}" method="POST">
                                 @csrf
                                 <button type="submit"
                                     class="item-detail__icon-btn {{ $likedByMe ? 'is-active' : '' }}"
@@ -116,7 +116,7 @@
                     @auth
                     <section class="item-detail__section">
                         <h3 class="item-detail__section-title--sub">商品のコメント</h3>
-                        <form action="{{ route('items.comments.store', ['item_id' => $item->id]) }}" method="POST" class="item-detail__comment-form">
+                        <form action="{{ route('items.comments.store', $item) }}" method="POST" class="item-detail__comment-form">
                             @csrf
                             <textarea name="body" class="item-detail__textarea" rows="4" placeholder="コメントを書いてください">{{ old('body') }}</textarea>
                             @error('body') <p class="item-detail__error">{{ $message }}</p> @enderror

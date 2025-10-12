@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Profile extends Model
 {
@@ -18,6 +19,18 @@ class Profile extends Model
         'address2',
         'phone',
     ];
+
+    protected $appends = ['avatar_url'];
+
+    public function getAvatarUrlAttribute()
+    {
+        $path = $this->avatar_path ?? null;
+        if (!$path) return null;
+
+        return Str::startsWith($path, ['http://', 'https://'])
+            ? $path
+            : asset('storage/' . $path);
+    }
 
     /**
      * Userとのリレーション（1対1）

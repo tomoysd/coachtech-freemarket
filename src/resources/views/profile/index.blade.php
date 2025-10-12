@@ -10,9 +10,9 @@
     {{-- ヘッダー：アイコン・名前・編集ボタン --}}
     <section class="mp-header">
         <div class="mp-avatar">
-            @php $avatar = optional($user->profile)->avatar_path; @endphp
+            @php $avatar = optional($user->profile)->avatar_url; @endphp
             @if($avatar)
-            <img src="{{ asset($avatar) }}" alt="プロフィール画像">
+            <img src="{{ $avatar }}" alt="プロフィール画像">
             @else
             <div class="avatar-ph"></div>
             @endif
@@ -44,7 +44,11 @@
                 <li class="card">
                     <a href="{{ route('items.show', $item->id) }}" class="card-link">
                         <div class="thumb">
+                            @if(!empty($item->image_url))
+                            <img src="{{ $item->image_url }}" alt="{{ $item->title }}" />
+                            @else
                             <div class="thumb-ph"></div>
+                            @endif
                         </div>
                         <p class="title">{{ $item->title ?? $item->name }}</p>
                     </a>
@@ -66,7 +70,12 @@
                 <li class="card">
                     <a href="{{ route('items.show', $pv->item->id) }}" class="card-link">
                         <div class="thumb">
+                            @php $item = $pv->item; @endphp
+                            @if($item && !empty($item->image_url))
+                            <img src="{{ $item->image_url }}" alt="{{ $item->title }}" />
+                            @else
                             <div class="thumb-ph"></div>
+                            @endif
                         </div>
                         <p class="title">{{ $pv->item->title ?? $pv->item->name }}</p>
                     </a>

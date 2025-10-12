@@ -13,7 +13,7 @@ use App\Http\Controllers\Auth\RegisterController;
 
 // 一覧・詳細
 Route::get('/', [ItemController::class, 'index'])->name('items.index');
-Route::get('/item/{item_id}', [ItemController::class, 'show'])->name('items.show');
+Route::get('/item/{item}', [ItemController::class, 'show'])->name('items.show');
 
 // 会員登録（GET: 画面 / POST: 登録）
 Route::get('/register', [RegisterController::class, 'create'])->name('register');
@@ -25,8 +25,8 @@ Route::view('/login', 'auth.login')->name('login');
 // 以降はログイン必須
 Route::middleware('auth')->group(function () {
 
-    Route::post('/item/{item_id}/like', [LikeController::class, 'toggle'])->name('items.like.toggle');
-    Route::post('/item/{item_id}/comments', [CommentController::class, 'store'])->name('items.comments.store');
+    Route::post('/item/{item}/like', [LikeController::class, 'toggle'])->name('items.like.toggle');
+    Route::post('/item/{item}/comments', [CommentController::class, 'store'])->name('items.comments.store');
     // 出品
     Route::get('/sell',  [ItemController::class, 'create'])->name('items.create');
     Route::post('/sell', [ItemController::class, 'store'])->name('items.store');

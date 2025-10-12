@@ -10,7 +10,7 @@
     <div class="purchase-left">
         <div class="purchase-item">
             <div class="item-image">
-                <img src="{{ $item->image }}" alt="商品画像">
+                <img src="{{ $item->image_url }}" alt="商品画像">
             </div>
             <div class="item-info">
                 <p class="item-name">{{ $item->title }}</p>
@@ -38,7 +38,7 @@
         <div class="shipping-section">
             <div class="shipping-header">
                 <span>配送先</span>
-                <a href="{{ route('shipping.edit', ['item_id' => $item->id]) }}" class="change-link">変更する</a>
+                <a href="{{ route('purchase.address.edit', ['item_id' => $item->id]) }}" class="change-link">変更する</a>
             </div>
             <div class="shipping-body">
                 <p>〒 {{ $shipping->postal_code }}</p>

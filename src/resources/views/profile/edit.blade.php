@@ -6,9 +6,9 @@
     <h1 class="auth-title">プロフィール設定</h1>
 
     <div class="mp-avatar">
-        @php $avatar = optional($user->profile)->avatar_path; @endphp
+        @php $avatar = optional($user->profile)->avatar_url; @endphp
         @if($avatar)
-        <img src="{{ asset($avatar) }}" alt="プロフィール画像">
+        <img src="{{ $avatar }}" alt="プロフィール画像">
         @else
         <div class="avatar-ph"></div>
         @endif
