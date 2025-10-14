@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Item;
 use Illuminate\Http\Request;
+use App\Models\Category;
+use App\Models\Condition;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ItemController extends Controller
 {
@@ -61,8 +65,10 @@ class ItemController extends Controller
      */
     public function create()
     {
-        $this->authorize('create', Item::class); // ポリシーが無ければ削除可
-        return view('items.create');
+        $categories = Category::all();
+        $conditions = Condition::all();
+
+        return view('items.create', compact('categories', 'conditions'));
     }
 
     /**
@@ -73,22 +79,28 @@ class ItemController extends Controller
         $this->authorize('create', Item::class);
 
         $validated = $request->validate([
+            'image'        => ['nullable', 'image', 'max:4096'],
+            'category_id'  => ['required','integer'],
+            'condition_id' => ['required', 'integer', 'in:1,2,3,4'],
             'title'        => ['required', 'string', 'max:100'],
+            'brand'        => ['nullable','string','max:100'],
             'description'  => ['nullable', 'string'],
             'price'        => ['required', 'integer', 'min:1'],
-            'condition_id' => ['required', 'integer', 'in:1,2,3,4'],
-            'image'        => ['nullable', 'image', 'max:4096'],
         ]);
 
-        // 画像保存（任意）
-        if ($request->hasFile('image')) {
-            $validated['image_path'] = $request->file('image')->store('items', 'public');
-        }
+        $path = $request->file('image')->store('items', 'public');
 
-        $validated['user_id'] = auth()->id();
+        Item::create([
+            'user_id'       => Auth::id(),
+            'title'         => $request->title,
+            'brand'         => $request->brand,
+            'description'   => $request->description,
+            'price'         => $request->price,
+            'category_id'   => $request->category_id,
+            'condition_id'  => $request->condition_id,
+            'image_path'    => $path, // 新規カラム
+        ]);
 
-        $item = Item::create($validated);
-
-        return redirect()->route('items.show', $item)->with('message', '商品を出品しました');
+        return redirect('/')->with('success', '商品を出品しました');
     }
 }

@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 
+
 class ItemSeeder extends Seeder
 {
     /** コンディション名 → ID のマップ */

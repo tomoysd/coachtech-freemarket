@@ -382,3 +382,76 @@
     font-size: 14px;
     text-transform: uppercase;
 }
+
+.sell-container {
+    max-width: 600px;
+    margin: 50px auto;
+    background: #fff;
+    padding: 30px;
+}
+
+.sell-title {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 25px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="file"],
+select,
+textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+textarea {
+    resize: vertical;
+}
+
+.category-list label {
+    display: inline-block;
+    margin-right: 10px;
+    margin-bottom: 5px;
+    cursor: pointer;
+}
+
+.required {
+    color: red;
+    font-size: 12px;
+    margin-left: 5px;
+}
+
+.error {
+    color: red;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+.btn-submit {
+    width: 100%;
+    background-color: #f33;
+    color: #fff;
+    border: none;
+    padding: 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-submit:hover {
+    background-color: #c00;
+}

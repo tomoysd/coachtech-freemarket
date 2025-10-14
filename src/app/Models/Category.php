@@ -9,10 +9,10 @@ class Category extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'sort_order'];
 
     public function items()
     {
-        return $this->belongsToMany(Item::class);
+        return $this->hasMany(Item::class);
     }
 }

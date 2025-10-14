@@ -14,12 +14,12 @@ class Item extends Model
     protected $fillable = [
         'user_id',
         'title',
+        'brand',
         'description',
         'price',
         'condition_id',
-        'status',
-        'sold_at',
-        'image_path',
+        'category_id',
+        'image_path'
     ];
 
     protected $appends = ['image_url']; // 自動で JSON にも載る（任意）
@@ -74,9 +74,8 @@ class Item extends Model
             ->withTimestamps();
     }
 
-    // 複数カテゴリ想定
-    public function categories()
+    public function category()
     {
-        return $this->belongsToMany(Category::class);
+        return $this->belongsTo(Category::class);
     }
 }

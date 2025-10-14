@@ -17,6 +17,7 @@ class CreateConditionsTable extends Migration
             $table->unsignedTinyInteger('id')->primary();
             $table->string('name', 50);
             $table->unsignedTinyInteger('sort_order')->default(0);
+            $table->timestamps();
         });
     }
 

@@ -14,8 +14,9 @@ class CreateCategoriesTable extends Migration
     public function up()
     {
         Schema::create('categories', function (Blueprint $table) {
-            $table->id();
+            $table->tinyIncrements('id'); // unsigned tinyint, PK
             $table->string('name', 50);
+            $table->unsignedTinyInteger('sort_order')->default(0);
             $table->timestamps();
         });
     }
