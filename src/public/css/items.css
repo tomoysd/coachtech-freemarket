@@ -421,14 +421,29 @@ textarea {
 textarea {
     resize: vertical;
 }
-
+.category-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
 .category-list label {
-    display: inline-block;
-    margin-right: 10px;
-    margin-bottom: 5px;
+    border: 1px solid #f33;
+    color: #f33;
+    border-radius: 20px;
+    padding: 6px 14px;
     cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+.category-list input[type="radio"] {
+    display: none;
 }
 
+.category-list input[type="radio"]:checked + label,
+.category-list label:hover {
+    background-color: #f33;
+    color: #fff;
+}
 .required {
     color: red;
     font-size: 12px;

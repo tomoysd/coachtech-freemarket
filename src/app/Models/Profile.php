@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class Profile extends Model
 {
@@ -14,10 +15,8 @@ class Profile extends Model
         'user_id',
         'avatar_path',
         'postal_code',
-        'prefecture',
-        'address1',
-        'address2',
-        'phone',
+        'address',
+        'building',
     ];
 
     protected $appends = ['avatar_url'];

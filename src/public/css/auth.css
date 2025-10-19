@@ -76,17 +76,14 @@ body {
 .auth-form {
     max-width: 600px; /* 入力欄/ボタンの基準幅 */
     margin: 0 auto; /* カード中央に揃える */
-    display: grid; 
-    grid-auto-rows: max-content; /* ← 追加：高さの自動計算 */
+    display: grid;
     row-gap: 28px;
 }
 
-.auth-form .form-row  {
-    margin-bottom: 18px;
+.auth-form .form-row {
+    margin-bottom: 0px;
 }
-.auth-form_row{
-    margin: 0;
-}
+
 .auth-form label {
     display: block;
     font-size: 14px;
@@ -170,3 +167,123 @@ body {
         max-width: none;
     } /* スマホは全幅に */
 }
+/* アイコン行（丸＋ボタンを横並び） */
+.mp-avatar-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+/* 丸いアイコン領域 */
+/* ========== アイコン行（丸＋右に赤ボタン） ========== */
+
+.mp-avatar-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 0 auto 24px; /* フォームと揃うように下だけ余白 */
+    max-width: 600px; /* フォームと同じ幅に寄せる */
+}
+
+.mp-avatar {
+    width: 96px;
+    height: 96px;
+    border-radius: 9999px;
+    background: #e5e5e5;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+}
+.mp-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* ネイティブfile入力は隠し、ラベルをボタン化 */
+.file-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+    clip: rect(0 0 0 0);
+    overflow: hidden;
+}
+.btn-image {
+    display: inline-block;
+    padding: 8px 12px;
+    border: 1px solid #e60012;
+    color: #e60012;
+    background: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    border-radius: 3px;
+    cursor: pointer;
+}
+.btn-image:hover {
+    opacity: 0.9;
+}
+
+/* ========== フォーム本体（幅と間隔を完全統一） ========== */
+
+.auth-form {
+    max-width: 600px; /* 入力欄＆ボタンの基準幅 */
+    margin: 0 auto; /* カード内で中央揃え */
+    display: grid;
+    row-gap: 24px; /* すべての行の間隔はここで統一 */
+}
+
+/* 旧ルールと衝突しないよう念のため初期化 */
+.auth-form .form-row {
+    margin: 0;
+}
+
+/* ラベルは統一 */
+.auth-form label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 6px;
+    color: #333;
+}
+
+/* 入力幅は100%で揃える（高さもボタンと同一） */
+.auth-form input[type="text"],
+.auth-form input[type="email"],
+.auth-form input[type="password"] {
+    width: 100%;
+    height: 44px;
+    padding: 0 12px;
+    border: 1px solid #cfcfcf;
+    border-radius: 3px;
+    background: #fff;
+}
+
+/* エラー表示（任意。既存を使うなら削除可） */
+.form-error {
+    margin-top: 6px;
+    font-size: 13px;
+    color: #b10000;
+}
+
+/* 送信ボタンも同じ長さに */
+.auth-submit {
+    display: block;
+    width: 100%;
+    height: 44px;
+    margin: 0;
+    border: none;
+    border-radius: 3px;
+    background: #e60012;
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+}
+.auth-submit:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+

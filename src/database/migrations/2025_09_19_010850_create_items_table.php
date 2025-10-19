@@ -18,15 +18,11 @@ class CreateItemsTable extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete(); // 出品者
             $table->string('title', 100);
             $table->text('description')->nullable();
+            $table->string('brand', 100)->nullable();
             $table->unsignedInteger('price'); // 円
-            $table->unsignedTinyInteger('condition_id'); // conditions.id
-            $table->enum('status', ['listed','sold','hidden'])->default('listed');
-            $table->timestamp('sold_at')->nullable();
+            $table->string('condition', 100);
+            $table->string('image_url', 255);
             $table->timestamps();
-
-            $table->foreign('condition_id')->references('id')->on('conditions');
-            $table->index('user_id');
-            $table->index(['status','created_at']);
         });
     }
 

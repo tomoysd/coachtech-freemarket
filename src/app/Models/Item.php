@@ -17,9 +17,8 @@ class Item extends Model
         'brand',
         'description',
         'price',
-        'condition_id',
-        'category_id',
-        'image_path'
+        'condition',
+        'image_url'
     ];
 
     protected $appends = ['image_url']; // 自動で JSON にも載る（任意）
@@ -31,15 +30,6 @@ class Item extends Model
         if ($url && Str::startsWith($url, ['http://', 'https://'])) {
             return $url;
         }
-
-        // 2) 相対パス（storage/app/public 配下）なら公開URLに変換
-        $path = $this->attributes['image_path'] ?? null;
-        if ($path) {
-            return asset('storage/'.$path);
-        }
-
-        // どちらも無ければ null
-        return null;
     }
 
     public function user()
@@ -74,8 +64,10 @@ class Item extends Model
             ->withTimestamps();
     }
 
-    public function category()
+    public function categories()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsToMany(Category::class, 'item_categories')
+                    ->using(ItemCategory::class) // 中間モデルを利用
+                    ->withTimestamps();
     }
 }

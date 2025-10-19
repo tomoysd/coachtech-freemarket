@@ -12,12 +12,10 @@ class ShippingAddress extends Model
 
     protected $fillable = [
         'purchase_id',
-        'recipient_name',
+        'name',
         'postal_code',
-        'prefecture',
-        'address1',
-        'address2',
-        'phone',
+        'address',
+        'building',
     ];
 
     public function purchase()

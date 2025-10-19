@@ -14,12 +14,10 @@ return new class extends Migration
         Schema::create('shipping_addresses', function (Blueprint $table) {
             $table->id();
             $table->foreignId('purchase_id')->constrained('purchases')->cascadeOnDelete(); // purchases(id)
-            $table->string('recipient_name', 255);
+            $table->string('name', 255);
             $table->string('postal_code', 10);
-            $table->string('prefecture', 50);
-            $table->string('address1', 255);
-            $table->string('address2', 255)->nullable();
-            $table->string('phone', 20)->nullable();
+            $table->string('address', 255);
+            $table->string('building', 255)->nullable();
             $table->timestamps();
         });
     }

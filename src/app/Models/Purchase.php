@@ -14,14 +14,11 @@ class Purchase extends Model
     protected $fillable = [
         'user_id',
         'item_id',
-        'amount',
-        'status',
-        'purchased_at',
+        'payment_method',
     ];
 
-    protected $casts = [
-        'purchased_at' => 'datetime',
-    ];
+    public const PAYMENT_CONBINI = 0;
+    public const PAYMENT_CARD    = 1;
 
     public function user()
     {
