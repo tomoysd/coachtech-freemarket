@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Item;
-use Illuminate\Http\Request;
+use App\Http\Requests\ExhibitionRequest;
 use App\Models\Category;
-use App\Models\Condition;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -15,7 +14,7 @@ class ItemController extends Controller
      * 商品一覧（おすすめ/マイリスト）
      * /?tab=recommend (default) or /?tab=mylist
      */
-    public function index(Request $request)
+    public function index(ExhibitionRequest $request)
     {
         $tab = $request->get('tab', 'recommend');
 
@@ -65,8 +64,8 @@ class ItemController extends Controller
      */
     public function create()
     {
-        $categories = Category::all();
-        $conditions = Condition::all();
+        $categories = Category::orderBy('sort_order')->get();
+        $conditions = Item::CONDITIONS; // ← これをBladeに渡す
 
         return view('items.create', compact('categories', 'conditions'));
     }
@@ -74,33 +73,29 @@ class ItemController extends Controller
     /**
      * 出品登録
      */
-    public function store(Request $request)
+    public function store(ExhibitionRequest $request)
     {
         $this->authorize('create', Item::class);
 
-        $validated = $request->validate([
-            'image'        => ['nullable', 'image', 'max:4096'],
-            'category_id'  => ['required','integer'],
-            'condition_id' => ['required', 'integer', 'in:1,2,3,4'],
-            'title'        => ['required', 'string', 'max:100'],
-            'brand'        => ['nullable','string','max:100'],
-            'description'  => ['nullable', 'string'],
-            'price'        => ['required', 'integer', 'min:1'],
+        $path = null;
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('items', 'public'); // storage/app/public/items/...
+        }
+
+        // items へ保存（image_url にパス、condition はそのまま文字）
+        $item = Item::create([
+            'user_id'     => Auth::id(),
+            'title'       => $request->title,
+            'brand'       => $request->brand,
+            'description' => $request->description,
+            'price'       => $request->price,
+            'condition'   => $request->condition, // ← 文字列
+            'image_url'   => $path,               // ← カラム名に合わせる
         ]);
 
-        $path = $request->file('image')->store('items', 'public');
+        // カテゴリ（多対多）を同期
+        $item->categories()->sync($request->category_ids);
 
-        Item::create([
-            'user_id'       => Auth::id(),
-            'title'         => $request->title,
-            'brand'         => $request->brand,
-            'description'   => $request->description,
-            'price'         => $request->price,
-            'category_id'   => $request->category_id,
-            'condition_id'  => $request->condition_id,
-            'image_path'    => $path, // 新規カラム
-        ]);
-
-        return redirect('/')->with('success', '商品を出品しました');
+        return redirect()->route('items.show', $item)->with('success', '商品を出品しました');
     }
 }

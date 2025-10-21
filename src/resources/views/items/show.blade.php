@@ -56,7 +56,7 @@
                     <a class="item-detail__cta" href="{{ route('purchase.create', ['item_id' => $item->id]) }}">購入手続きへ</a>
                     @else
                     <a class="item-detail__cta" href="{{ route('login') }}">購入手続きへ</a>
-                    @endauth>
+                    @endauth
 
                     {{-- 商品説明 --}}
                     <section class="item-detail__section">
@@ -87,7 +87,7 @@
                             </div>
                             <div class="item-detail__prop">
                                 <dt>商品の状態</dt>
-                                <dd><span class="item-detail__chip">{{ $item->condition_label ?? '新品' }}</span></dd>
+                                <dd><span class="item-detail__chip">{{ $item->condition_label ?? $item->condition }}</span></dd>
                             </div>
                         </dl>
                     </section>

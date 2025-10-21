@@ -4,19 +4,14 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use App\Models\Category;
+use App\Models\Item;
+use App\Models\User;
 
 
 
 class ItemSeeder extends Seeder
 {
-    /** コンディション名 → ID のマップ */
-    private const COND = [
-        '良好' => 1,
-        '目立った傷や汚れなし' => 2,
-        'やや傷や汚れあり' => 3,
-        '状態が悪い' => 4,
-    ];
-
     /**
      * Run the database seeds.
      *
@@ -25,7 +20,14 @@ class ItemSeeder extends Seeder
     public function run()
     {
         // 出品者ID（上の UserSeeder で作ったユーザーを使う）
-        $sellerId = DB::table('users')->where('email', 'seller@example.com')->value('id') ?? 1;
+        $sellerId = User::where('email', 'seller@example.com')->value('id');
+
+        // まず既存の関連を消す（順序注意：pivot→親）
+        DB::table('item_categories')->delete();
+        DB::table('favorites')->delete();
+        DB::table('purchases')->delete();
+        DB::table('shipping_addresses')->delete();
+        DB::table('items')->delete();
 
         // === ここにシートの行を“そのまま”並べるだけ ===
         // 価格はカンマ付きでもOK（下で数値化します）
@@ -36,7 +38,8 @@ class ItemSeeder extends Seeder
                 'brand' => 'Rolax',
                 'description' => 'スタイリッシュなデザインのメンズ腕時計',
                 'image_url' => 'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/Armani+Mens+Clock.jpg',
-                'condition_name' => '良好',
+                'condition' => '良好',
+                'categories'  => ['メンズ', 'ファッション'],
             ],
             [
                 'title' => 'HDD',
@@ -44,7 +47,8 @@ class ItemSeeder extends Seeder
                 'brand' => '西芝',
                 'description' => '高速で信頼性の高いハードディスク',
                 'image_url' => 'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/HDD+Hard+Disk.jpg',
-                'condition_name' => '目立った傷や汚れなし',
+                'condition' => '目立った傷や汚れなし',
+                'categories'  => ['家電'],
             ],
             [
                 'title' => '玉ねぎ3束',
@@ -52,7 +56,8 @@ class ItemSeeder extends Seeder
                 'brand' => '新森本',
                 'description' => '新鮮な玉ねぎ3束のセット',
                 'image_url' => 'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/iLoveIMG+d.jpg',
-                'condition_name' => 'やや傷や汚れあり',
+                'condition' => 'やや傷や汚れあり',
+                'categories'  => ['キッチン'],
             ],
             [
                 'title' => '革靴',
@@ -60,7 +65,8 @@ class ItemSeeder extends Seeder
                 'brand' => null, // シートが「なし」の場合は null にするのがおすすめ
                 'description' => 'クラシックなデザインの革靴',
                 'image_url' => 'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/Leather+Shoes+Product+Photo.jpg',
-                'condition_name' => '状態が悪い',
+                'condition' => '状態が悪い',
+                'categories'  => ['メンズ', 'ファッション'],
             ],
             [
                 'title' => 'ノートPC',
@@ -68,7 +74,8 @@ class ItemSeeder extends Seeder
                 'brand' => null,
                 'description' => '高性能なノートパソコン',
                 'image_url' => 'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/Living+Room+Laptop.jpg',
-                'condition_name' => '良好',
+                'condition' => '良好',
+                'categories'  => ['家電'],
             ],
             [
                 'title' => 'マイク',
@@ -77,6 +84,7 @@ class ItemSeeder extends Seeder
                 'description' => '高音質のレコーディング用マイク',
                 'image_url' => 'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/Music+Mic+4632231.jpg',
                 'condition_name' => '目立った傷や汚れなし',
+                'categories'  => ['家電', 'おもちゃ'],
             ],
             [
                 'title' => 'ショルダーバッグ',
@@ -84,7 +92,8 @@ class ItemSeeder extends Seeder
                 'brand' => null,
                 'description' => '使いやすいショルダーバッグ',
                 'image_url' => 'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/Purse+fashion+pocket.jpg',
-                'condition_name' => 'やや傷や汚れあり',
+                'condition' => 'やや傷や汚れあり',
+                'categories'  => ['レディース', 'ファッション'],
             ],
             [
                 'title' => 'タンブラー',
@@ -92,7 +101,8 @@ class ItemSeeder extends Seeder
                 'brand' => null,
                 'description' => '使いやすいタンブラー',
                 'image_url' => 'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/Tumbler+souvenir.jpg',
-                'condition_name' => '状態が悪い',
+                'condition' => '状態が悪い',
+                'categories'  => ['キッチン'],
             ],
             [
                 'title' => 'コーヒーミル',
@@ -100,7 +110,8 @@ class ItemSeeder extends Seeder
                 'brand' => 'Starbacks',
                 'description' => '手動のコーヒーミル',
                 'image_url' => 'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/Waitress+with+Coffee+Grinder.jpg',
-                'condition_name' => '良好',
+                'condition' => '良好',
+                'categories'  => ['キッチン', 'ハンドメイド'],
             ],
             [
                 'title' => 'メイクセット',
@@ -108,44 +119,27 @@ class ItemSeeder extends Seeder
                 'brand' => null,
                 'description' => '便利なメイクアップセット',
                 'image_url' => 'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/%E5%A4%96%E5%87%BA%E3%83%A1%E3%82%A4%E3%82%AF%E3%82%A2%E3%83%83%E3%83%95%E3%82%9A%E3%82%BB%E3%83%83%E3%83%88.jpg',
-                'condition_name' => '目立った傷や汚れなし',
+                'condition' => '目立った傷や汚れなし',
+                'categories'  => ['レディース', 'コスメ'],
             ],
         ];
 
 
-        DB::table('items')->delete();
-        // 参照する子テーブルもデータを消したいなら先に delete
-        DB::table('favorites')->delete();
-        DB::table('purchases')->delete();
-        DB::table('shipping_addresses')->delete();
-
-
         foreach ($rows as $r) {
-            DB::table('items')->insert([
-                'user_id'       => $sellerId,
-                'title'         => $r['title'],
-                'brand'         => $this->normalizeBrand($r['brand']),
-                'description'   => $r['description'],
-                'image_url'     => $r['image_url'],
-                'price'         => $this->toInt($r['price']),
-                'condition'  => self::COND[$r['condition_name']] ?? 1,
-                'created_at'    => now(),
-                'updated_at'    => now(),
+            $item = Item::create([
+                'user_id'     => $sellerId,
+                'title'       => $r['title'],
+                'brand'       => $r['brand'],
+                'description' => $r['description'],
+                'image_url'   => $r['image_url'],
+                'price'       => (int)str_replace([',', '円'], '', (string)$r['price']),
+                'condition'   => $r['condition'], // ← 文字列で保存
             ]);
+            // カテゴリ名 → id へ変換して pivot を attach
+            if (!empty($r['categories'])) {
+                $ids = Category::whereIn('name', $r['categories'])->pluck('id')->all();
+                $item->categories()->sync($ids);
+            }
         }
-    }
-
-    private function toInt(string $price): int
-    {
-        // 「15,000」→ 15000 、「¥」や空白があっても除去
-        return (int)preg_replace('/[^\d]/', '', $price);
-    }
-
-    private function normalizeBrand($brand)
-    {
-        if (is_null($brand)) return null;
-        $b = trim($brand);
-        if ($b === '' || $b === 'なし') return null;
-        return $b;
     }
 }

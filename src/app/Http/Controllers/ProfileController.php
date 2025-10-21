@@ -2,61 +2,69 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\ProfileRequest;
+use App\Models\Profile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
+    /**
+     * プロフィール編集画面を表示
+     */
     public function edit()
     {
         $user = Auth::user();
         return view('profile.edit', compact('user'));
     }
 
-    public function update(Request $request)
+    /**
+     * プロフィール更新処理
+     */
+    public function update(ProfileRequest $request)
     {
-        // 必要になったら FormRequest 化してください（今回の要件は画面遷移のみでOK）
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:20'],
-            'postal_code' => ['nullable', 'string', 'max:8'],
-            'address' => ['nullable', 'string', 'max:255'],
-            'building' => ['nullable', 'string', 'max:255'],
-            'avatar'      => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'], // 5MB
-        ]);
-
         $user = Auth::user();
 
+        // バリデーション結果を取得
+        $data = $request->validated();
+
         DB::transaction(function () use ($user, $data, $request) {
-            // usersテーブル側
+
+            // --- ① ユーザー名の更新 ---
             $user->name = $data['name'];
             $user->save();
 
-            // profiles を確実に用意
-            $profile = $user->profile()->firstOrCreate([], [
-                'postal_code' => $data['postal_code'] ?? '',
-                'address'     => $data['address'] ?? '',
-                'building'    => $data['building'] ?? '',
-            ]);
+            // --- ② プロフィール情報の作成または更新 ---
+            $profile = Profile::firstOrCreate(
+                ['user_id' => $user->id],
+                ['postal_code' => '', 'address' => '', 'building' => '', 'avatar_path' => '']
+            );
 
-            // 画像が送られていれば保存（storage/app/public/avatars/..）
+            // 住所系の更新
+            $profile->postal_code = $data['postal_code'] ?? '';
+            $profile->address = $data['address'] ?? '';
+            $profile->building = $data['building'] ?? '';
+
+            // --- ③ 画像アップロード処理 ---
             if ($request->hasFile('avatar')) {
-                // 旧画像があれば削除
-                if (!empty($profile->avatar_path)) {
+
+                // 古い画像があれば削除
+                if (!empty($profile->avatar_path) && Storage::disk('public')->exists($profile->avatar_path)) {
                     Storage::disk('public')->delete($profile->avatar_path);
                 }
+
+                // 新しい画像を保存
                 $path = $request->file('avatar')->store('avatars', 'public');
                 $profile->avatar_path = $path;
             }
 
-            // 住所系
-            $profile->postal_code = $data['postal_code'] ?? '';
-            $profile->address     = $data['address'] ?? '';
-            $profile->building    = $data['building'] ?? '';
+            // 保存
             $profile->save();
         });
 
-        return back()->with('message', '更新しました');
+        // 更新完了後、マイページまたは一覧にリダイレクト
+        return redirect('/')
+            ->with('message', 'プロフィールを更新しました。');
     }
 }

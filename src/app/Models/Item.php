@@ -11,6 +11,14 @@ class Item extends Model
 {
     use HasFactory;
 
+    public const CONDITIONS = [
+        '良好',
+        '目立った傷や汚れなし',
+        'やや傷や汚れあり',
+        '状態が悪い',
+    ];
+
+
     protected $fillable = [
         'user_id',
         'title',
@@ -64,7 +72,7 @@ class Item extends Model
     public function categories()
     {
         return $this->belongsToMany(Category::class, 'item_categories')
-                    ->using(ItemCategory::class) // 中間モデルを利用
-                    ->withTimestamps();
+            ->using(ItemCategory::class) // 中間モデルを利用
+            ->withTimestamps();
     }
 }
