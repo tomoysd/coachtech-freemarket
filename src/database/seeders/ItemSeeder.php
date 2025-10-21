@@ -128,8 +128,7 @@ class ItemSeeder extends Seeder
                 'description'   => $r['description'],
                 'image_url'     => $r['image_url'],
                 'price'         => $this->toInt($r['price']),
-                'condition_id'  => self::COND[$r['condition_name']] ?? 1,
-                'status'        => 'listed',
+                'condition'  => self::COND[$r['condition_name']] ?? 1,
                 'created_at'    => now(),
                 'updated_at'    => now(),
             ]);
