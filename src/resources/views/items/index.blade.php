@@ -4,44 +4,46 @@
 
 @section('tabs')
 <a href="{{ route('items.index', ['tab' => 'recommend']) }}"
-    class="tab-link {{ request('tab','recommend')==='recommend' ? 'is-active' : '' }}">
+    class="tab-link {{ request('tab') === 'recommend' ? 'is-active' : '' }}">
     おすすめ
 </a>
+
 <a href="{{ route('items.index', ['tab' => 'mylist']) }}"
-    class="tab-link {{ request('tab')==='mylist' ? 'is-active' : '' }}">
+    class="tab-link {{ request('tab') === 'mylist' ? 'is-active' : '' }}">
     マイリスト
 </a>
 @endsection
 
 @section('content')
 @if ($items instanceof \Illuminate\Contracts\Pagination\Paginator && $items->isEmpty())
-<p class="no-items">商品がありません。</p>
-@elseif (is_array($items) || $items instanceof \Illuminate\Support\Collection)
-@if ($items->isEmpty())
-<p class="no-items">商品がありません。</p>
-@endif
-@endif
+<p class="no-items">商品がありません</p>
+@elseif (isset($items) && $items->isNotEmpty())
 <div class="wrap">
     <div class="items-grid">
         @foreach ($items as $item)
-        <a href="{{ route('items.show', $item) }}" class="item-card">
+        {{-- 売れた商品は is-sold クラスを付与 --}}
+        <a href="{{ route('items.show', $item) }}" class="item-card {{ $item->purchases_count > 0 ? 'is-sold' : '' }}">
             <div class="thumb">
-                @if(!empty ($item->image_url) || !empty($item->image_path))
-                <img src="{{ $item->image_url ?? asset('storage/'.$item->image_path) }}" alt="{{ $item->title }}">
+                @if(!empty($item->image_url))
+                <img src="{{ $item->image_url }}" alt="{{ $item->title ?? $item->name }}">
                 @else
-                {{-- ここで購入済み判定 --}}
-                @if($item->purchase)
-                <div class="sold-badge">SOLD</div>
-                @endif
                 <span class="thumb-dummy">商品画像</span>
                 @endif
+
+                {{-- SOLDバッジ --}}
+                @if ($item->purchases_count > 0)
+                <span class="sold-badge">SOLD</span>
+                @endif
             </div>
-            <div class="item-name">{{ $item->title }}</div>
+
+            <div class="item-name">{{ $item->title ?? $item->name }}</div>
         </a>
         @endforeach
     </div>
 </div>
+@endif
 
+{{-- ページネーション --}}
 @if ($items instanceof \Illuminate\Contracts\Pagination\Paginator)
 <div class="pager">
     {{ $items->withQueryString()->links() }}

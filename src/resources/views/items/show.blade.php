@@ -53,9 +53,23 @@
 
                     {{-- 購入導線 --}}
                     @auth
-                    <a class="item-detail__cta" href="{{ route('purchase.create', ['item_id' => $item->id]) }}">購入手続きへ</a>
+                        @if ($item->purchases_count > 0)
+                        {{-- 売り切れ表示 --}}
+                        <div class="item-detail__sold">
+                            <span class="sold-badge">SOLD</span>
+                            <button type="button" class="item-detail__cta item-detail__cta--disabled" disabled>
+                                購入できません
+                            </button>
+                        </div>
+                        @else
+                        {{-- 購入可能 --}}
+                        <a class="item-detail__cta" href="{{ route('purchase.create', ['item_id' => $item->id]) }}">
+                            購入手続きへ
+                        </a>
+                        @endif
                     @else
-                    <a class="item-detail__cta" href="{{ route('login') }}">購入手続きへ</a>
+                        {{-- 未ログイン時 --}}
+                        <a class="item-detail__cta" href="{{ route('login') }}">購入手続きへ</a>
                     @endauth
 
                     {{-- 商品説明 --}}
@@ -79,7 +93,7 @@
                                 <dt>カテゴリー</dt>
                                 <dd class="item-detail__chips">
                                     @forelse ($categories as $cat)
-                                    <span class="item-detail__chip">{{ is_object($cat) ? ($cat->name ?? $cat->title ?? 'カテゴリ') : $cat }}</span>
+                                    <span class="item-detail__chip">{{ $cat->name }}</span>
                                     @empty
                                     <span class="item-detail__chip is-muted">未分類</span>
                                     @endforelse
@@ -87,7 +101,7 @@
                             </div>
                             <div class="item-detail__prop">
                                 <dt>商品の状態</dt>
-                                <dd><span class="item-detail__chip">{{ $item->condition_label ?? $item->condition }}</span></dd>
+                                <dd><span class="item-detail__chip">{{ $item->condition_label }}</span></dd>
                             </div>
                         </dl>
                     </section>

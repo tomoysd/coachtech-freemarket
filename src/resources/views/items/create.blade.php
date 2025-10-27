@@ -48,7 +48,7 @@
 
         {{-- 商品の状態（セレクトボックス；固定配列） --}}
         <div class="form-group">
-            <label for="condition" class="required">商品の状態<span class="required">必須</span></label>
+            <label for="condition">商品の状態<span class="required">必須</span></label>
             <select id="condition" name="condition" required>
                 <option value="">選択してください</option>
                 @foreach ($conditions as $cond)

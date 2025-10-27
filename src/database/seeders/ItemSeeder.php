@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use App\Models\Category;
 use App\Models\Item;
+use App\Models\ItemCategory;
 use App\Models\User;
 
 
@@ -83,7 +84,7 @@ class ItemSeeder extends Seeder
                 'brand' => null,
                 'description' => '高音質のレコーディング用マイク',
                 'image_url' => 'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/Music+Mic+4632231.jpg',
-                'condition_name' => '目立った傷や汚れなし',
+                'condition' => '目立った傷や汚れなし',
                 'categories'  => ['家電', 'おもちゃ'],
             ],
             [
@@ -133,12 +134,18 @@ class ItemSeeder extends Seeder
                 'description' => $r['description'],
                 'image_url'   => $r['image_url'],
                 'price'       => (int)str_replace([',', '円'], '', (string)$r['price']),
-                'condition'   => $r['condition'], // ← 文字列で保存
+                'condition'   => array_search($r['condition'], Item::CONDITIONS) ?: 1, // ← 文字を数値に変換
             ]);
             // カテゴリ名 → id へ変換して pivot を attach
             if (!empty($r['categories'])) {
-                $ids = Category::whereIn('name', $r['categories'])->pluck('id')->all();
-                $item->categories()->sync($ids);
+                $ids = collect($r['categories'])
+                    ->map(function ($name) use($item) {
+                        // 余計な空白や全角を正規化
+                        $normalized = trim(mb_convert_kana($name, 's')); // 全角スペースを半角に
+                        return ["item_id" => $item->id, "category_id" => Category::where(['name' => $normalized])->first()->id];
+                    })
+                    ->all();
+                $item->categories()->attach($ids);
             }
         }
     }

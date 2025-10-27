@@ -17,8 +17,14 @@ class Purchase extends Model
         'payment_method',
     ];
 
-    public const PAYMENT_CONBINI = 0;
-    public const PAYMENT_CARD    = 1;
+    public const METHOD_MAP = [
+        1 => 'コンビニ支払い',
+        2 => 'カード支払い'
+    ];
+    public function getPaymentMethodLabelAttribute(): string
+    {
+        return self::METHOD_MAP[$this->payment_method] ?? '不明';
+    }
 
     public function user()
     {

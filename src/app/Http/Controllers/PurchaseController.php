@@ -6,6 +6,7 @@ use App\Models\Item;
 use App\Models\Purchase;
 use App\Models\ShippingAddress;
 use Illuminate\Http\Request;
+use App\Http\Requests\PurchaseRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -27,12 +28,10 @@ class PurchaseController extends Controller
         if (!$addr) {
             $p = $user->profile; // プロフィール前提（postal_code/prefecture/address1/address2/phone）
             $addr = [
-                'recipient_name' => $user->name ?? '',
+                'name' => $user->name ?? '',
                 'postal_code'    => $p->postal_code ?? '',
-                'prefecture'     => $p->prefecture ?? '',
-                'address1'       => $p->address1 ?? '',
-                'address2'       => $p->address2 ?? '',
-                'phone'          => $p->phone ?? '',
+                'address'       => $p->address ?? '',
+                'building'       => $p->building ?? '',
             ];
         }
 
@@ -46,14 +45,8 @@ class PurchaseController extends Controller
     }
 
     // 購入確定
-    public function store(Request $request, $item_id)
+    public function store(PurchaseRequest $request, $item_id)
     {
-        $request->validate([
-            'payment_method' => ['required','in:convenience_store,credit_card'],
-        ], [
-            'payment_method.required' => '支払い方法を選択してください。',
-        ]);
-
         $user = Auth::user();
         $item = Item::findOrFail($item_id);
 
@@ -69,23 +62,23 @@ class PurchaseController extends Controller
         if (!$addr) {
             $p = $user->profile;
             $addr = [
-                'recipient_name' => $user->name ?? '',
+                'name' => $user->name ?? '',
                 'postal_code'    => $p->postal_code ?? '',
-                'prefecture'     => $p->prefecture ?? '',
-                'address1'       => $p->address1 ?? '',
-                'address2'       => $p->address2 ?? '',
-                'phone'          => $p->phone ?? '',
+                'address'       => $p->address ?? '',
+                'building'       => $p->building ?? '',
             ];
         }
 
-        DB::transaction(function () use ($user, $item, $addr) {
+        // 最終ガード：セッションに name が無いケースをユーザー名で補完
+        $addr = array_merge(['name' => $user->name ?? ''], $addr);
+
+
+        DB::transaction(function () use ($request, $user, $item, $addr) {
             // purchases 登録（仕様書カラムに一致）
             $purchase = Purchase::create([
                 'user_id'      => $user->id,
                 'item_id'      => $item->id,
-                'amount'       => $item->price,      // 当時の価格
-                'status'       => 1,                 // 1:購入済（tinyint）
-                'purchased_at' => Carbon::now(),
+                'payment_method' => (int)$request->payment_method,
             ]);
 
             // shipping_addresses 登録（purchase_idで紐づく）

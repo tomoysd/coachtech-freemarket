@@ -372,15 +372,16 @@
 }
 .sold-badge {
     position: absolute;
-    top: 8px;
-    left: 8px;
-    background: rgba(230, 0, 18, 0.9);
+    top: 10px;
+    left: -12px;
+    background: #d33;
     color: #fff;
-    font-weight: bold;
-    padding: 4px 10px;
-    border-radius: 4px;
+    font-weight: 700;
+    padding: 6px 14px;
     font-size: 14px;
-    text-transform: uppercase;
+    transform: rotate(-12deg);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+    letter-spacing: 0.5px;
 }
 
 .sell-container {

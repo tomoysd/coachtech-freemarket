@@ -10,6 +10,6 @@ class LoginResponse implements LoginResponseContract
     public function toResponse($request)
     {
         // intended があればそこへ。なければ商品一覧へ。
-        return redirect()->intended(route('items.index'));
+        return redirect()->route('items.index');
     }
 }

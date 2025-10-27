@@ -20,7 +20,7 @@ class MypageController extends Controller
         // 購入した商品：purchases.user_id = 自分 → item を辿る
         $purchased = $user->purchases()
             ->with('item')
-            ->latest('purchased_at') // 購入は購入日時でOK
+            ->latest('created_at') // 購入は購入日時でOK
             ->paginate(12, ['*'], 'purchased_page'); // ←こちらも別名
 
         return view('profile.index', compact('user', 'listedItems', 'purchased'));

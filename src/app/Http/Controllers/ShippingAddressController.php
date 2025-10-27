@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Item;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\AddressRequest;
 
 class ShippingAddressController extends Controller
 {
@@ -20,12 +20,10 @@ class ShippingAddressController extends Controller
         if (!$addr) {
             $p = $user->profile;
             $addr = [
-                'recipient_name' => $user->name ?? '',
+                'name' => $user->name ?? '',
                 'postal_code'    => $p->postal_code ?? '',
-                'prefecture'     => $p->prefecture ?? '',
-                'address1'       => $p->address1 ?? '',
-                'address2'       => $p->address2 ?? '',
-                'phone'          => $p->phone ?? '',
+                'address'       => $p->address ?? '',
+                'building'       => $p->building ?? '',
             ];
         }
 
@@ -36,20 +34,19 @@ class ShippingAddressController extends Controller
     }
 
     // 住所変更の反映（セッション保存 → 購入画面へ戻る）
-    public function update(Request $request, $item_id)
+    public function update(AddressRequest $request, $item_id)
     {
-        $validated = $request->validate([
-            'recipient_name' => ['required','string','max:255'],
-            'postal_code'    => ['required','string','max:10'],
-            'prefecture'     => ['required','string','max:50'],
-            'address1'       => ['required','string','max:255'],
-            'address2'       => ['nullable','string','max:255'],
-            'phone'          => ['nullable','string','max:20'],
-        ]);
+        $validated = $request->validated();
+
+        // 住所入力画面では name を受け取らないため、ここで補完する
+        $validated['name'] = Auth::user()->name ?? '';
+
+
 
         session(["shipping_address.$item_id" => $validated]);
 
-        return redirect()->route('purchase.create', ['item_id' => $item_id])
+        return redirect()
+            ->route('purchase.create', ['item_id' => $item_id])
             ->with('message', '配送先住所を更新しました。');
     }
 }

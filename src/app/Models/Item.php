@@ -11,14 +11,6 @@ class Item extends Model
 {
     use HasFactory;
 
-    public const CONDITIONS = [
-        '良好',
-        '目立った傷や汚れなし',
-        'やや傷や汚れあり',
-        '状態が悪い',
-    ];
-
-
     protected $fillable = [
         'user_id',
         'title',
@@ -27,6 +19,14 @@ class Item extends Model
         'price',
         'condition',
         'image_url'
+    ];
+
+    // 商品状態の定数リスト
+    const CONDITIONS = [
+        1 => '良好',
+        2 => '目立った傷や汚れなし',
+        3 => 'やや傷や汚れあり',
+        4 => '状態が悪い',
     ];
 
     protected $appends = ['image_url']; // 自動で JSON にも載る（任意）
@@ -40,14 +40,19 @@ class Item extends Model
         }
     }
 
+    public function getConditionLabelAttribute()
+    {
+        return self::CONDITIONS[$this->condition] ?? '不明';
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
-
-    public function purchase()
+// 商品が「購入」されたか判定に使う（1商品1購入想定でも hasMany の方が集計しやすい）
+    public function purchases()
     {
-        return $this->hasOne(Purchase::class);
+        return $this->hasMany(Purchase::class);
     }
 
     public function favoredBy(): BelongsToMany

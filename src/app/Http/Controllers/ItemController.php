@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Item;
 use App\Http\Requests\ExhibitionRequest;
 use App\Models\Category;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -14,13 +15,11 @@ class ItemController extends Controller
      * 商品一覧（おすすめ/マイリスト）
      * /?tab=recommend (default) or /?tab=mylist
      */
-    public function index(ExhibitionRequest $request)
+    public function index(Request $request)
     {
         $tab = $request->get('tab', 'recommend');
-
         if ($tab === 'mylist') {
-            $this->middleware('auth'); // ルートミドルウェアでも守っているが二重保険
-            if (!auth()->check()) {
+            if (!Auth::check()) {
                 return redirect()->route('login');
             }
             // お気に入り一覧（中間テーブル favorites がある前提）
@@ -30,7 +29,9 @@ class ItemController extends Controller
                 ->get();
         } else {
             // おすすめ：とりあえず新着順
-            $items = Item::latest()->paginate(12);
+            $items = Item::withCount('purchases')
+            ->latest()
+            ->paginate(12);
         }
 
         return view('items.index', compact('items', 'tab'));
@@ -51,11 +52,8 @@ class ItemController extends Controller
             ? $item->likes()->where('user_id', auth()->id())->exists()
             : false;
 
-        // カテゴリ（単一/複数どちらでも拾えるように）
-        $categories = method_exists($item, 'categories')
-            ? $item->categories
-            : collect($item->category ? [$item->category] : []);
-
+        $categories = $item->categories;
+        $item->loadCount('purchases'); // ← これで $item->purchases_count が使える
         return view('items.show', compact('item', 'comments', 'likesCount', 'likedByMe', 'categories'));
     }
 
