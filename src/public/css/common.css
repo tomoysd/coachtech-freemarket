@@ -174,3 +174,58 @@ body {
     font-size: 14px;
     color: #333; /* 黒帯の影響で白になっていた場合に備えて明示 */
 }
+
+/* 画像ラッパーを配置の基準に（SOLDを重ねるため必須） */
+.item-detail__media {
+    position: relative;
+    overflow: hidden;
+}
+
+/* SOLDバッジ（画像の左上） */
+.sold-badge {
+    position: absolute;
+    top: 8px;
+    left: -12px;
+    padding: 6px 14px;
+    font-weight: 700;
+    color: #fff;
+    background: #d33;
+    transform: rotate(-12deg);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+    letter-spacing: 0.5px;
+    z-index: 2;
+}
+
+/* 購入ボタン（通常：赤） */
+.item-detail__cta {
+    display: block; /* ← 横幅いっぱい */
+    width: 100%;
+    text-align: center;
+    background: #d33;
+    color: #fff;
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.2s ease;
+    margin: 12px 0;
+}
+.item-detail__cta:hover {
+    background: #b22;
+}
+
+/* 売り切れ時：灰色・クリック不可 */
+.item-detail__cta--disabled {
+    display: block;
+    width: 100%; /* 横幅いっぱいに */
+    background-color: #b0b0b0; /* 灰色 */
+    color: #fff;
+    text-align: center;
+    padding: 12px 0;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: not-allowed;
+}
+
+

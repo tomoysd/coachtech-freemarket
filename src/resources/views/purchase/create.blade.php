@@ -26,9 +26,9 @@
                 <select name="payment_method" id="payment_method">
                     <option value="">選択してください</option>
                     <option value="1"
-                        @selected($paymentMethod==='1' || $paymentMethod===1 )>コンビニ支払い</option>
+                        @if($paymentMethod==='1' || $paymentMethod===1 ) selected @endif>コンビニ支払い</option>
                     <option value="2"
-                        @selected($paymentMethod==='2' || $paymentMethod===2 )>カード支払い</option>
+                        @if($paymentMethod==='2' || $paymentMethod===2 ) selected @endif>カード支払い</option>
                 </select>
                 <button type="submit" class="reflect-btn">反映する</button>
             </form>

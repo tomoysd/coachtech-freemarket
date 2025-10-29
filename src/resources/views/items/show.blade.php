@@ -19,6 +19,9 @@
                 @else
                 <div class="item-detail__image--placeholder">商品画像</div>
                 @endif
+                @if ($item->purchases_count > 0)
+                <span class="sold-badge">SOLD</span>
+                @endif
             </div>
 
             {{-- 右：縦長カード --}}
@@ -53,23 +56,20 @@
 
                     {{-- 購入導線 --}}
                     @auth
-                        @if ($item->purchases_count > 0)
-                        {{-- 売り切れ表示 --}}
-                        <div class="item-detail__sold">
-                            <span class="sold-badge">SOLD</span>
-                            <button type="button" class="item-detail__cta item-detail__cta--disabled" disabled>
-                                購入できません
-                            </button>
-                        </div>
-                        @else
-                        {{-- 購入可能 --}}
-                        <a class="item-detail__cta" href="{{ route('purchase.create', ['item_id' => $item->id]) }}">
-                            購入手続きへ
-                        </a>
-                        @endif
+                    @if ($item->purchases_count > 0)
+                    {{-- 売り切れ表示 --}}
+                        <button type="button" class="item-detail__cta item-detail__cta--disabled" disabled aria-disabled="true">
+                            購入できません
+                        </button>
                     @else
-                        {{-- 未ログイン時 --}}
-                        <a class="item-detail__cta" href="{{ route('login') }}">購入手続きへ</a>
+                    {{-- 購入可能 --}}
+                    <a class="item-detail__cta" href="{{ route('purchase.create', ['item_id' => $item->id]) }}">
+                        購入手続きへ
+                    </a>
+                    @endif
+                    @else
+                    {{-- 未ログイン時 --}}
+                    <a class="item-detail__cta" href="{{ route('login') }}">購入手続きへ</a>
                     @endauth
 
                     {{-- 商品説明 --}}

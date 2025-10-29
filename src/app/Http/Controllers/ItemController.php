@@ -13,25 +13,38 @@ class ItemController extends Controller
 {
     /**
      * 商品一覧（おすすめ/マイリスト）
-     * /?tab=recommend (default) or /?tab=mylist
+     *  /?tab=mylist
      */
     public function index(Request $request)
     {
-        $tab = $request->get('tab', 'recommend');
+        $tab = $request->query('tab', 'recommend');
+
+        // 検索語：クエリ優先、無ければセッション
+        $keyword = $request->query('q', session('items_search'));
+        // 検索語の保持/クリア
+        if ($keyword !== null && $keyword !== '') {
+            session(['items_search' => $keyword]);
+        } else {
+            session()->forget('items_search');
+        }
+
         if ($tab === 'mylist') {
             if (!Auth::check()) {
-                return redirect()->route('login');
-            }
+                $items=collect();
+            }else{
             // お気に入り一覧（中間テーブル favorites がある前提）
             $items = $request->user()
                 ->favorites()        // ->belongsToMany(Item::class, 'favorites') などの想定
                 ->latest('favorites.created_at')
+                ->where("items.title", "LIKE","%$keyword%")
                 ->get();
+                }
         } else {
             // おすすめ：とりあえず新着順
             $items = Item::withCount('purchases')
-            ->latest()
-            ->paginate(12);
+                ->latest()
+                ->where("title", "LIKE","%$keyword%")
+                ->paginate(12);
         }
 
         return view('items.index', compact('items', 'tab'));
