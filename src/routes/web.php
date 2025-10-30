@@ -11,6 +11,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ShippingAddressController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LoginController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 // 一覧・詳細
 Route::get('/', [ItemController::class, 'index'])->name('items.index');
@@ -48,6 +51,28 @@ Route::middleware('auth')->group(function () {
     Route::get('/mypage?page=sell',  [MypageController::class, 'sell'])->name('mypage.sell');
 
     // プロフィール
-    Route::get('/mypage/profile',  [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/mypage/profile',  [ProfileController::class, 'edit'])->middleware(['auth', 'verified'])->name('profile.edit');
     Route::patch('/mypage/profile',[ProfileController::class, 'update'])->name('profile.update');
 });
+
+// 誘導画面（ログイン済/未確認ユーザー向け）
+Route::get('/email/verify', function () {
+    return view('auth.verify-email'); // 作るビュー(次の章)
+})->middleware('auth')->name('verification.notice');
+
+// メール内リンク：verified にしてから「完了画面」へ
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill(); // メールアドレスを verified 済みにする
+    return redirect()->route('verification.done'); // ← あなたのプロフィール設定画面のルート名に合わせて変更
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+// 認証完了画面
+Route::get('/email/verify/done', function () {
+    return view('auth.verify-done');
+})->middleware('auth')->name('verification.done');
+
+// 認証メールの再送
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+    return back()->with('status', 'verification-link-sent');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');

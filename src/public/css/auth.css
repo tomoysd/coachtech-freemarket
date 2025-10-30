@@ -287,3 +287,99 @@ body {
     cursor: not-allowed;
 }
 
+/* ===== Email Verify (誘導) ===== */
+.verify-wrap {
+    max-width: 760px;
+    margin: 64px auto;
+    background: #fff;
+    padding: 56px 48px;
+    text-align: center;
+}
+
+.verify-text {
+    font-size: 16px;
+    line-height: 1.9;
+    letter-spacing: 0.02em;
+    color: black;
+    margin: 0 0 24px;
+}
+
+/* 大きいグレーボタン */
+.verify-btn {
+    display: inline-block;
+    min-width: 100px;
+    height: 44px;
+    padding: 0 20px;
+    border-radius: 6px;
+    border: 1px solid #bfbfbf;
+    background: #f2f2f2;
+    color: #333;
+    font-weight: 700;
+    cursor: default; /* 実行ボタンではないので */
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04) inset;
+    margin-bottom: 16px;
+}
+
+/* 再送リンク（テキストリンク風） */
+.verify-resend {
+    margin: 0 0 4px;
+}
+.verify-resend__link {
+    background: none;
+    border: none;
+    padding: 40px;
+    font: inherit;
+    color: #2f6dcc; /* 青 */
+    text-decoration: underline;
+    cursor: pointer;
+}
+.verify-resend__link:hover {
+    text-decoration-thickness: 2px;
+}
+
+/* 再送完了メッセージ */
+.verify-status {
+    margin-top: 12px;
+    color: #2d8a34;
+    font-size: 14px;
+}
+
+/* 小さめ端末の余白調整 */
+@media (max-width: 480px) {
+    .verify-wrap {
+        padding: 40px 20px;
+        margin: 40px auto;
+    }
+    .verify-btn {
+        min-width: 220px;
+    }
+}
+.verify-note {
+    margin-top: 12px;
+    color: #666;
+    font-size: 14px;
+}
+
+.verify-done__title {
+    font-size: 18px;
+    margin: 0 0 12px;
+    text-align: center;
+}
+.verify-done__text {
+    text-align: center;
+    margin: 0 0 20px;
+    color: #555;
+}
+.verify-done__btn {
+    display: inline-block;
+    min-width: 240px;
+    height: 44px;
+    line-height: 44px;
+    text-align: center;
+    border-radius: 6px;
+    background: #e6e6e6;
+    color: #333;
+    border: 1px solid #bfbfbf;
+    font-weight: 700;
+    text-decoration: none;
+}
