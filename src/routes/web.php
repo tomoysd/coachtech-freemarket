@@ -45,6 +45,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/purchase/address/{item_id}',   [ShippingAddressController::class, 'edit'])->name('purchase.address.edit');
     Route::patch('/purchase/address/{item_id}', [ShippingAddressController::class, 'update'])->name('purchase.address.update');
 
+    //決済
+    Route::post('/items/{item}/checkout', [PurchaseController::class, 'checkout'])
+        ->name('purchase.checkout');
+
+
     // マイページ
     Route::get('/mypage',       [MypageController::class, 'index'])->name('mypage');
     Route::get('/mypage?page=buy',   [MypageController::class, 'buy'])->name('mypage.buy');
@@ -52,19 +57,22 @@ Route::middleware('auth')->group(function () {
 
     // プロフィール
     Route::get('/mypage/profile',  [ProfileController::class, 'edit'])->middleware(['auth', 'verified'])->name('profile.edit');
-    Route::patch('/mypage/profile',[ProfileController::class, 'update'])->name('profile.update');
+    Route::patch('/mypage/profile', [ProfileController::class, 'update'])->name('profile.update');
 });
 
 // 誘導画面（ログイン済/未確認ユーザー向け）
 Route::get('/email/verify', function () {
+    if (auth()->user()->hasVerifiedEmail()) {
+        return redirect()->route('/mypage/profile'); // 認証済は即プロフィールへ
+    }
     return view('auth.verify-email'); // 作るビュー(次の章)
 })->middleware('auth')->name('verification.notice');
 
 // メール内リンク：verified にしてから「完了画面」へ
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill(); // メールアドレスを verified 済みにする
-    return redirect()->route('verification.done'); // ← あなたのプロフィール設定画面のルート名に合わせて変更
-})->middleware(['auth', 'signed'])->name('verification.verify');
+    return redirect()->route('verification.done'); // 完了画面へ
+})->middleware(['auth', 'signed', 'throttle:6,1'])->name('verification.verify');
 
 // 認証完了画面
 Route::get('/email/verify/done', function () {
@@ -76,3 +84,13 @@ Route::post('/email/verification-notification', function (Request $request) {
     $request->user()->sendEmailVerificationNotification();
     return back()->with('status', 'verification-link-sent');
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
+Route::get('/purchase/pending', function () {
+    return view('purchase.pending');
+})->name('purchase.pending');
+
+Route::get('/purchase/success', [PurchaseController::class, 'success'])
+    ->name('purchase.success');
+
+Route::get('/purchase/cancel', [PurchaseController::class, 'cancel'])
+    ->name('purchase.cancel');

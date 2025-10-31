@@ -289,7 +289,7 @@ body {
 
 /* ===== Email Verify (誘導) ===== */
 .verify-wrap {
-    max-width: 760px;
+    max-width: 720px;
     margin: 64px auto;
     background: #fff;
     padding: 56px 48px;
@@ -297,11 +297,12 @@ body {
 }
 
 .verify-text {
-    font-size: 16px;
-    line-height: 1.9;
-    letter-spacing: 0.02em;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.5;
     color: black;
     margin: 0 0 24px;
+    letter-spacing: 0;
 }
 
 /* 大きいグレーボタン */
@@ -309,13 +310,14 @@ body {
     display: inline-block;
     min-width: 100px;
     height: 44px;
+    line-height: 44px;
     padding: 0 20px;
     border-radius: 6px;
     border: 1px solid #bfbfbf;
     background: #f2f2f2;
     color: #333;
     font-weight: 700;
-    cursor: default; /* 実行ボタンではないので */
+    cursor: pointer;
     box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04) inset;
     margin-bottom: 16px;
 }
@@ -354,11 +356,6 @@ body {
         min-width: 220px;
     }
 }
-.verify-note {
-    margin-top: 12px;
-    color: #666;
-    font-size: 14px;
-}
 
 .verify-done__title {
     font-size: 18px;
@@ -382,4 +379,9 @@ body {
     border: 1px solid #bfbfbf;
     font-weight: 700;
     text-decoration: none;
+}
+.verify-note {
+  margin-top: 12px;
+  color: #666;
+  font-size: 14px;
 }

@@ -10,6 +10,7 @@ use App\Http\Requests\PurchaseRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Stripe\StripeClient;
 
 class PurchaseController extends Controller
 {
@@ -92,5 +93,61 @@ class PurchaseController extends Controller
 
         // 遷移先：商品一覧（要件2-4）
         return redirect('/')->with('message', '購入が完了しました。');
+    }
+
+    public function checkout(Request $request, Item $item)
+    {
+        // 1) バリデーション & 売切れ防止チェック（必要に応じて調整）
+        $method = $request->validate([
+            'payment_method' => 'required|in:card,konbini',
+        ])['payment_method'];
+
+        // 2) 売り切れチェック（必要なら）
+        if (method_exists($item, 'isSold') && $item->isSold()) {
+            return back()->withErrors(['payment_method' => 'この商品は購入できません（売り切れ）']);
+        }
+
+        // 3) Stripeクライアント
+        $stripe = new StripeClient(config('services.stripe.secret'));
+
+        // 4) Checkoutセッション作成
+        $session = $stripe->checkout->sessions->create([
+            'mode' => 'payment',
+            'payment_method_types' => [$method], // ← 'card' or 'konbini'
+            'line_items' => [[
+                'price_data' => [
+                    'currency' => 'jpy',
+                    'product_data' => [
+                        'name' => $item->title ?? $item->name ?? '商品',
+                    ],
+                    'unit_amount' => (int) $item->price, // 円の整数
+                ],
+                'quantity' => 1,
+            ]],
+            // Konbiniはメールアドレスがあると親切（控えメールなどで利用）
+            'customer_email' => $request->user()->email,
+            'metadata' => [
+                'item_id' => (string) $item->id,
+                'user_id' => (string) $request->user()->id,
+            ],
+            'success_url' => route('purchase.success') ,
+            'cancel_url'  => route('purchase.cancel'),
+        ]);
+
+        // 4) Stripeホストの決済画面へ
+        return redirect()->away($session->url);
+    }
+
+    public function success(Request $request)
+    {
+        // とりあえず「決済画面から戻ってきた」ことだけ表示。
+        // 本実装では Webhook を使って支払成功を確定させ、在庫/購入レコード更新に進める。
+        $sessionId = $request->query('session_id');
+        return view('purchase.success', compact('sessionId'));
+    }
+
+    public function cancel()
+    {
+        return view('purchase.cancel');
     }
 }

@@ -7,24 +7,8 @@
         メール認証を完了してください。
     </p>
 
-    @php
-    $email = auth()->user()->email;
-    $domain = \Illuminate\Support\Str::after($email, '@');
-    $inbox = match($domain){
-    'gmail.com' => 'https://mail.google.com',
-    'yahoo.co.jp','yahoo.com' => 'https://mail.yahoo.co.jp',
-    'outlook.com','hotmail.com','live.com' => 'https://outlook.live.com/mail/',
-    default => '#',
-    };
-    @endphp
-
-    <a href="{{ $inbox }}" target="_blank" rel="noopener" class="verify-btn">認証はこちらから</a>
-
-    @if($inbox === '#')
-    <p class="verify-note">
-        ご利用中のメールサービスを開いて、認証メールをご確認ください。
-    </p>
-    @endif
+    {{-- MailHog へのリンク --}}
+    <a href="http://localhost:8025" target="_blank" rel="noopener" class="verify-btn">認証はこちらから</a>
 
     {{-- 再送リンク --}}
     <form method="POST" action="{{ route('verification.send') }}" class="verify-resend">

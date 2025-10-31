@@ -51,10 +51,10 @@
         </div>
 
         {{-- 購入確定（POST） --}}
-        <form method="POST" action="{{ route('purchase.store', ['item_id' => $item->id]) }}" class="buy-form">
+        <form method="POST" action="{{ route('purchase.checkout', ['item' => $item->id]) }}" class="buy-form">
             @csrf
-            <input type="hidden" name="payment_method" value="{{ $paymentMethod }}">
-
+            <input type="hidden" name="payment_method"
+                value="{{ $paymentMethod == 1 ? 'konbini' : ($paymentMethod == 2 ? 'card' : '') }}">
             <button type="submit" class="purchase-btn">購入する</button>
         </form>
     </div>

@@ -26,6 +26,6 @@ class LoginResponse implements LoginResponseContract
                 ->with('status', 'verification-link-sent');
         }
         // intended があればそこへ。なければ商品一覧へ。
-        return redirect()->route('items.index');
+        return redirect()->intended(route('items.index'));
     }
 }
