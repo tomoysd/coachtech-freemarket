@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.auth')
 @section('content')
 <div class="container">
     <h1>決済が完了しました</h1>

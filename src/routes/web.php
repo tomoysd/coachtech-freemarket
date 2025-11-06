@@ -14,6 +14,7 @@ use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\StripeWebhookController;
 
 // 一覧・詳細
 Route::get('/', [ItemController::class, 'index'])->name('items.index');
@@ -27,6 +28,15 @@ Route::post('/register', [RegisterController::class, 'store'])->name('register.s
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+Route::get('/purchase/success', [PurchaseController::class, 'success'])
+    ->name('purchase.success');
+
+Route::get('/purchase/cancel', [PurchaseController::class, 'cancel'])
+    ->name('purchase.cancel');
+
+Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle'])
+    ->name('stripe.webhook');
 
 // 以降はログイン必須
 Route::middleware('auth')->group(function () {
@@ -88,9 +98,3 @@ Route::post('/email/verification-notification', function (Request $request) {
 Route::get('/purchase/pending', function () {
     return view('purchase.pending');
 })->name('purchase.pending');
-
-Route::get('/purchase/success', [PurchaseController::class, 'success'])
-    ->name('purchase.success');
-
-Route::get('/purchase/cancel', [PurchaseController::class, 'cancel'])
-    ->name('purchase.cancel');

@@ -43,23 +43,18 @@ body {
     text-decoration: none;
     color: inherit;
 }
-
-/* 正方形のサムネ枠を作る → 画像がはみ出さない */
+/* 画像ラッパーを配置の基準にする */
 .thumb {
-    aspect-ratio: 1 / 1; /* 正方形を保証 */
-    background: var(--gray-100);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    overflow: hidden; /* はみ出しカット */
-    display: grid;
-    place-items: center;
+    position: relative;
+    aspect-ratio: 1 / 1;
+    background: #fafafa;
+    overflow: hidden;
 }
 
-/* 中の画像は枠いっぱい、切り抜きは cover */
 .thumb img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* ここが超大事！ */
+    object-fit: cover;
     display: block;
 }
 
@@ -122,7 +117,7 @@ body {
 }
 
 /* 検索フォーム */
-.search {
+.header-search {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -140,13 +135,7 @@ body {
     color: #222;
 }
 .search-btn {
-    height: 34px;
-    padding: 0 12px;
-    border: 1px solid #8b8f94;
-    border-radius: 6px;
-    background: #fff;
-    color: #222;
-    cursor: pointer;
+    display: none;
 }
 
 /* 右上ナビ */
@@ -178,7 +167,23 @@ body {
 /* 画像ラッパーを配置の基準に（SOLDを重ねるため必須） */
 .item-detail__media {
     position: relative;
+    width: 100%;
+    max-width: 400px; /* 正方形の横幅（ここでサイズ調整） */
+    aspect-ratio: 1 / 1; /* 高さを自動で正方形にする！ */
+    margin: 0 auto;
     overflow: hidden;
+    background: #fff;
+    border-radius: 6px;
+    display: flex;
+    min-height: auto; /* 右カードに高さ負けしない程度 */
+    background-color: #f8f8f8; /* 売れていない時の背景 */
+}
+.item-detail__media img {
+    width: 100%; /* コンテナ幅に合わせる */
+    height: auto; /* 縦横比を保持して縮小 */
+    display: block;
+    object-fit: cover; /* 枠いっぱいにフィット */
+    border-radius: 8px; /* デザインが合えば丸みも付けられる */
 }
 
 /* SOLDバッジ（画像の左上） */
@@ -215,7 +220,7 @@ body {
 }
 
 /* 売り切れ時：灰色・クリック不可 */
-.item-detail__cta--disabled {
+button.item-detail__cta--disabled {
     display: block;
     width: 100%; /* 横幅いっぱいに */
     background-color: #b0b0b0; /* 灰色 */
@@ -227,5 +232,6 @@ body {
     font-size: 16px;
     cursor: not-allowed;
 }
-
-
+.is-sold img {
+    filter: grayscale(100%) brightness(0.8);
+}

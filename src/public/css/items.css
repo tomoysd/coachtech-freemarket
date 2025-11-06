@@ -16,37 +16,7 @@
     font-weight: bold;
 }
 
-.item-grid {
-    display: grid;
-    gap: 28px; /* PCで詰まりにくい間隔 */
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-}
 
-/* 幅ごとの列数固定（上から優先適用） */
-@media (min-width: 1280px) {
-    /* PC広め：1400〜1540もここに入る */
-    .item-grid {
-        grid-template-columns: repeat(4, 1fr);
-    }
-}
-@media (min-width: 960px) and (max-width: 1279px) {
-    /* タブレット横〜小さめPC */
-    .item-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-@media (min-width: 600px) and (max-width: 959px) {
-    /* タブレット縦 */
-    .item-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-@media (max-width: 599px) {
-    /* スマホ */
-    .item-grid {
-        grid-template-columns: 1fr;
-    }
-}
 
 /* カードはそのまま */
 .item-card {
@@ -99,7 +69,7 @@
    ========================= */
 
 .item-detail {
-    background: #f7f7f7;
+    background:#fff;
     padding: 24px 0 64px;
 }
 
@@ -109,7 +79,7 @@
 }
 
 .item-detail__title {
-    font-size: 20px;
+    font-size: 45px;
     font-weight: 700;
     margin: 0 0 12px;
     color: #222;
@@ -121,29 +91,6 @@
     gap: 28px;
 }
 
-/* 左：画像は小さめ（四角） */
-.item-detail__media {
-    background: #fff;
-    border: 1px solid #e5e5e5;
-    border-radius: 6px;
-    padding: 24px;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 520px; /* 右カードに高さ負けしない程度 */
-}
-
-.item-detail__media img,
-.item-detail__image--placeholder {
-    width: 360px; /* 小さめ固定 */
-    height: 360px;
-    border-radius: 4px;
-    border: 1px solid #ddd;
-    background: #f0f0f0;
-    display: grid;
-    place-items: center;
-    color: #666;
-}
 
 /* 右：縦長カード */
 .item-detail__panel-card {
@@ -371,38 +318,7 @@
     }
 }
 
-/* 画像ラッパーを配置の基準にする */
-.thumb {
-    position: relative; /* ← これが最重要 */
-    aspect-ratio: 1 / 1;
-    background: #fafafa;
-    overflow: hidden; /* はみ出し防止（任意） */
-}
 
-.thumb img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-.sold-badge {
-    position: absolute;
-    top: 10px;
-    left: -12px;
-    background: #d33;
-    color: #fff;
-    font-weight: 700;
-    padding: 6px 14px;
-    font-size: 14px;
-    transform: rotate(-12deg);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
-    letter-spacing: 0.5px;
-    z-index: 2; /* 念のため前面に */
-}
-/* 売り切れ感（任意） */
-.item-card.is-sold .thumb img {
-    filter: grayscale(100%) brightness(0.9);
-}
 .sell-container {
     max-width: 600px;
     margin: 50px auto;

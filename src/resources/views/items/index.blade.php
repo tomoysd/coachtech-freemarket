@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+
+
 @section('title', '商品一覧')
 
 @section('tabs')
@@ -19,7 +21,7 @@
 <p class="no-items">商品がありません</p>
 @elseif (isset($items) && $items->isNotEmpty())
 <div class="wrap">
-    <div class="items-grid">
+    <div class="items-grid {{ request('tab', auth()->check() ? 'mylist' : 'recommend') === 'mylist' ? 'grid-3' : '' }}">
         @foreach ($items as $item)
         {{-- 売れた商品は is-sold クラスを付与 --}}
         <a href="{{ route('items.show', $item) }}" class="item-card {{ $item->purchases_count > 0 ? 'is-sold' : '' }}">

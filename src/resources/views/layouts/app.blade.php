@@ -29,14 +29,14 @@
             <!-- 検索フォーム -->
             <form action="{{ route('items.index') }}" method="GET" class="header-search">
                 {{-- 今いるタブを維持（/ ?tab=mylist のまま検索させる） --}}
-                <input type="hidden" name="tab" value="{{ request('tab', 'recommend') }}">
+                <input type="hidden" name="tab" value="{{ request('tab', auth()->check() ? 'mylist' : 'recommend') }}">
                 <input
                     type="text"
                     name="q"
                     value="{{ request('q', session('items_search')) }}"
                     placeholder="なにをお探しですか？"
                     aria-label="検索キーワード" />
-                <button class="search-btn" type="submit">検索</button>
+                <button class="search-btn" type="submit" hidden aria-hidden="true" tabindex="-1">検索</button>
                 @if(session('items_search'))
                 <a href="{{ route('items.index', ['tab' => request('tab', 'recommend')]) }}" class="search-clear">× クリア</a>
                 @endif

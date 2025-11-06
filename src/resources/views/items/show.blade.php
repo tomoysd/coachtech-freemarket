@@ -1,14 +1,16 @@
 @extends('layouts.app')
 
+@section('css')
+<link rel="stylesheet" href="{{ asset('css/items.css') }}">
+@endsection
+
 @section('title', $item->title ?? $item->name ?? '商品詳細')
 
 @section('content')
 <div class="item-detail">
     <div class="item-detail__container">
 
-        <h1 class="item-detail__title">
-            {{ $item->title ?? $item->name ?? '商品名がここに入る' }}
-        </h1>
+
 
         <div class="item-detail__body">
             {{-- 左：画像 --}}
@@ -27,6 +29,9 @@
             {{-- 右：縦長カード --}}
             <aside class="item-detail__panel">
                 <div class="item-detail__panel-card">
+                    <h1 class="item-detail__title">
+                        {{ $item->title ?? $item->name ?? '商品名がここに入る' }}
+                    </h1>
 
                     {{-- 価格 + いいね/コメント --}}
                     <div class="item-detail__price-row">
@@ -58,9 +63,9 @@
                     @auth
                     @if ($item->purchases_count > 0)
                     {{-- 売り切れ表示 --}}
-                        <button type="button" class="item-detail__cta item-detail__cta--disabled" disabled aria-disabled="true">
-                            購入できません
-                        </button>
+                    <button type="button" class="item-detail__cta item-detail__cta--disabled" disabled aria-disabled="true">
+                        購入できません
+                    </button>
                     @else
                     {{-- 購入可能 --}}
                     <a class="item-detail__cta" href="{{ route('purchase.create', ['item_id' => $item->id]) }}">
@@ -129,7 +134,7 @@
 
                     @auth
                     <section class="item-detail__section">
-                        <h3 class="item-detail__section-title--sub">商品のコメント</h3>
+                        <h3 class="item-detail__section-title--sub">商品へのコメント</h3>
                         <form action="{{ route('items.comments.store', $item) }}" method="POST" class="item-detail__comment-form">
                             @csrf
                             <textarea name="body" class="item-detail__textarea" rows="4" placeholder="コメントを書いてください">{{ old('body') }}</textarea>

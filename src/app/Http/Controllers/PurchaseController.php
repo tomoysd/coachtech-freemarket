@@ -117,9 +117,7 @@ class PurchaseController extends Controller
             'line_items' => [[
                 'price_data' => [
                     'currency' => 'jpy',
-                    'product_data' => [
-                        'name' => $item->title ?? $item->name ?? '商品',
-                    ],
+                    'product_data' => ['name' => $item->title ?? $item->name ?? '商品',],
                     'unit_amount' => (int) $item->price, // 円の整数
                 ],
                 'quantity' => 1,
@@ -130,7 +128,14 @@ class PurchaseController extends Controller
                 'item_id' => (string) $item->id,
                 'user_id' => (string) $request->user()->id,
             ],
-            'success_url' => route('purchase.success') ,
+            // ★ PaymentIntent側にもメタデータをコピーしておく
+            'payment_intent_data' => [
+                'metadata' => [
+                    'item_id' => (string)$item->id,
+                    'user_id' => (string)$request->user()->id,
+                ],
+            ],
+            'success_url' => route('purchase.success') . '?session_id={CHECKOUT_SESSION_ID}',
             'cancel_url'  => route('purchase.cancel'),
         ]);
 
