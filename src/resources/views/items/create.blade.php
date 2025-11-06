@@ -22,16 +22,17 @@
 
         {{-- 商品画像 --}}
         <div class="form-group">
-            <label for="image">商品画像<span class="required">必須</span></label>
-            <input type="file" name="image" id="image">
-            @error('image', 'exhibition')
-            <p class="error">{{ $message }}</p>
-            @enderror
+            <label for="image" class="required">商品画像</label>
+            <div class="image-drop">
+                <input type="file" name="image" id="image" class="file-input">
+                <label for="image" class="file-btn">画像を選択する</label>
+            </div>
+            @error('image','exhibition')<p class="error">{{ $message }}</p>@enderror
         </div>
 
         {{-- カテゴリー --}}
         <div class="form-group">
-            <label for="category_id">カテゴリー<span class="required">必須</span></label>
+            <label for="category_id" class="required">カテゴリー</label>
             <div class="category-list">
                 @foreach ($categories as $category)
                 <label>
@@ -48,11 +49,13 @@
 
         {{-- 商品の状態（セレクトボックス；固定配列） --}}
         <div class="form-group">
-            <label for="condition">商品の状態<span class="required">必須</span></label>
-            <select id="condition" name="condition" required>
-                <option value="">選択してください</option>
-                @foreach ($conditions as $cond)
-                <option value="{{ $cond }}" {{ old('condition')===$cond ? 'selected' : '' }}>{{ $cond }}</option>
+            <label for="condition" class="required">商品の状態</label>
+            <select id="condition" name="condition" class="select">
+                <option value="hidden">選択してください</option>
+                @foreach ($conditions as $key => $label) {{-- $key=1..6, $label='新品・未使用' 等 --}}
+                <option value="{{ $key }}" {{ old('condition') == $key ? 'selected' : '' }}>
+                    {{ $label }}
+                </option>
                 @endforeach
             </select>
             @error('condition', 'exhibition') <p class="error">{{ $message }}</p> @enderror
@@ -60,8 +63,8 @@
 
         {{-- 商品名 --}}
         <div class="form-group">
-            <label for="title">商品名<span class="required">必須</span></label>
-            <input type="text" name="title" id="title" value="{{ old('title') }}">
+            <label for="title" class="required">商品名</label>
+            <input type="text" name="title" id="title" value="{{ old('title') }}" class="input">
             @error('title', 'exhibition')
             <p class="error">{{ $message }}</p>
             @enderror
@@ -70,7 +73,7 @@
         {{-- ブランド名 --}}
         <div class="form-group">
             <label for="brand">ブランド名</label>
-            <input type="text" name="brand" id="brand" value="{{ old('brand') }}">
+            <input type="text" name="brand" id="brand" value="{{ old('brand') }}" class="input">
             @error('brand', 'exhibition')
             <p class="error">{{ $message }}</p>
             @enderror
@@ -78,8 +81,8 @@
 
         {{-- 商品の説明 --}}
         <div class="form-group">
-            <label for="description">商品の説明<span class="required">必須</span></label>
-            <textarea name="description" id="description" rows="5">{{ old('description') }}</textarea>
+            <label for="description" class="required">商品の説明</label>
+            <textarea name="description" id="description" rows="5" class="textarea">{{ old('description') }}</textarea>
             @error('description', 'exhibition')
             <p class="error">{{ $message }}</p>
             @enderror
@@ -87,8 +90,11 @@
 
         {{-- 販売価格 --}}
         <div class="form-group">
-            <label for="price">販売価格<span class="required">必須</span></label>
-            <input type="number" name="price" id="price" value="{{ old('price') }}" min="1">
+            <label for="price" class="required">販売価格</label>
+            <div class="price-wrap">
+                <span class="price-prefix">¥</span>
+                <input type="number" name="price" id="price" value="{{ old('price') }}" class="input price-input" min="1">
+            </div>
             @error('price', 'exhibition')
             <p class="error">{{ $message }}</p>
             @enderror
@@ -96,5 +102,16 @@
 
         <button type="submit" class="btn-submit">出品する</button>
     </form>
+
+    @push('scripts')
+    <script>
+        const f = document.getElementById('image');
+        if (f) {
+            f.addEventListener('change', () => {
+                document.getElementById('fileName').textContent = f.files[0]?.name ?? '選択されていません';
+            });
+        }
+    </script>
+    @endpush
 </div>
 @endsection

@@ -5,38 +5,92 @@
     padding: 24px 16px 48px;
     background: #fff;
 }
-
-/* ===== header ===== */
+/* --- ヘッダー全体（mp-header） --- */
 .mp-header {
-    display: grid;
-    grid-template-columns: 96px 1fr;
-    gap: 24px;
-    align-items: center;
-    padding: 24px 0 16px;
-    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center; /* 縦方向を中央揃え */
+    justify-content: space-between; /* 左右に分ける（名前とボタンを両端配置） */
+    background-color: #fff;
+    padding: 24px 28px;
+    gap: 20px; /* アイコン・テキスト・ボタンの間隔 */
 }
 
-.mp-avatar img,
-.avatar-ph {
-    width: 96px;
-    height: 96px;
-    border-radius: 9999px;
-    background: #e5e5e5;
-    display: block;
+/* --- 左側：アイコン＋名前部分 --- */
+.mp-avatar {
+    flex-shrink: 0;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: #eee;
+    overflow: hidden;
+}
+
+.mp-avatar img {
+    width: 100%;
+    height: 100%;
     object-fit: cover;
+    border-radius: 50%;
 }
 
-.mp-name {
-    margin: 0 0 12px;
-    font-size: 20px;
-    font-weight: 700;
+.avatar-ph {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: #ddd;
 }
+
+/* --- 名前とボタンをまとめる（mp-meta） --- */
+.mp-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex: 1;
+    gap: 16px;
+}
+
+/* --- ユーザー名 --- */
+.mp-name {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0;
+    color: #333;
+}
+
+/* --- 編集ボタン --- */
 .mp-edit {
     display: inline-block;
-    padding: 8px 14px;
-    border: 1.5px solid #ef4444;
+    padding: 8px 16px;
+    border: 1px solid #e64444;
     border-radius: 6px;
+    color: #e64444;
+    background-color: #fff;
     text-decoration: none;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.mp-edit:hover {
+    background-color: #e64444;
+    color: #fff;
+}
+
+/* --- レスポンシブ調整（スマホ時） --- */
+@media (max-width: 768px) {
+    .mp-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .mp-meta {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .mp-edit {
+        width: auto;
+    }
 }
 
 /* ===== tabs (pure CSS) ===== */

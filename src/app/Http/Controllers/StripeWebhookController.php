@@ -36,7 +36,6 @@ class StripeWebhookController extends Controller
                     if (Purchase::where('stripe_payment_intent_id', $pi->id)->exists()) {
                         return response('ok', 200);
                     }
-
                     // 在庫確定＆購入レコード作成（あなたのスキーマに合わせて調整）
                     \DB::transaction(function () use ($itemId, $userId, $pi, $amount) {
                         $item = Item::lockForUpdate()->find($itemId);

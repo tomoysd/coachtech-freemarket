@@ -46,7 +46,7 @@ class PurchaseController extends Controller
     }
 
     // 購入確定
-    public function store(PurchaseRequest $request, $item_id)
+    public function store($item_id, $paymentMethod)
     {
         $user = Auth::user();
         $item = Item::findOrFail($item_id);
@@ -74,12 +74,12 @@ class PurchaseController extends Controller
         $addr = array_merge(['name' => $user->name ?? ''], $addr);
 
 
-        DB::transaction(function () use ($request, $user, $item, $addr) {
+        DB::transaction(function () use ($paymentMethod, $user, $item, $addr) {
             // purchases 登録（仕様書カラムに一致）
             $purchase = Purchase::create([
                 'user_id'      => $user->id,
                 'item_id'      => $item->id,
-                'payment_method' => (int)$request->payment_method,
+                'payment_method' => (int)$paymentMethod,
             ]);
 
             // shipping_addresses 登録（purchase_idで紐づく）
@@ -135,7 +135,7 @@ class PurchaseController extends Controller
                     'user_id' => (string)$request->user()->id,
                 ],
             ],
-            'success_url' => route('purchase.success') . '?session_id={CHECKOUT_SESSION_ID}',
+            'success_url' => route('purchase.success') . "?item_id={$item->id}&paymentMethod={$method}",
             'cancel_url'  => route('purchase.cancel'),
         ]);
 
@@ -145,10 +145,7 @@ class PurchaseController extends Controller
 
     public function success(Request $request)
     {
-        // とりあえず「決済画面から戻ってきた」ことだけ表示。
-        // 本実装では Webhook を使って支払成功を確定させ、在庫/購入レコード更新に進める。
-        $sessionId = $request->query('session_id');
-        return view('purchase.success', compact('sessionId'));
+        return redirect()->to(route('purchase.store', ['item_id'=> $request->query('item_id'), 'paymentMethod'=>$request->query('paymentMethod')=='card' ? 2 : 1]));
     }
 
     public function cancel()

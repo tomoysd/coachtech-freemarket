@@ -45,7 +45,6 @@ class ProfileController extends Controller
             $profile->postal_code = $data['postal_code'] ?? '';
             $profile->address = $data['address'] ?? '';
             $profile->building = $data['building'] ?? '';
-
             // --- ③ 画像アップロード処理 ---
             if ($request->hasFile('avatar')) {
 

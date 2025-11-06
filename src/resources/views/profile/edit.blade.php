@@ -5,6 +5,9 @@
 <div class="auth-card">
     <h1 class="auth-title">プロフィール設定</h1>
 
+    <form action="{{ route('profile.update') }}" method="post" class="auth-form" enctype="multipart/form-data">
+        @csrf
+        @method('PATCH')
     <div class="mp-avatar-row">
         {{-- 左：現在のアイコン（またはプレースホルダー） --}}
         <div class="mp-avatar">
@@ -24,10 +27,6 @@
         </div>
     </div>
 
-
-    <form action="{{ route('profile.update') }}" method="post" class="auth-form">
-        @csrf
-        @method('PATCH')
 
         <div class="form-row">
             <label for="name">ユーザー名</label>

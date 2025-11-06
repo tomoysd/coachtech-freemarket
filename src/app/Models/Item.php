@@ -31,14 +31,6 @@ class Item extends Model
 
     protected $appends = ['image_url']; // 自動で JSON にも載る（任意）
 
-    public function getImageUrlAttribute()
-    {
-        // 1) すでにフルURLが入っていればそのまま返す
-        $url = $this->attributes['image_url'] ?? null;
-        if ($url && Str::startsWith($url, ['http://', 'https://'])) {
-            return $url;
-        }
-    }
 
     public function getConditionLabelAttribute()
     {

@@ -16,8 +16,6 @@
     font-weight: bold;
 }
 
-
-
 /* カードはそのまま */
 .item-card {
     background: #fff;
@@ -69,7 +67,7 @@
    ========================= */
 
 .item-detail {
-    background:#fff;
+    background: #fff;
     padding: 24px 0 64px;
 }
 
@@ -90,7 +88,6 @@
     grid-template-columns: 560px 1fr; /* 左固定(画像) / 右可変 */
     gap: 28px;
 }
-
 
 /* 右：縦長カード */
 .item-detail__panel-card {
@@ -318,7 +315,6 @@
     }
 }
 
-
 .sell-container {
     max-width: 600px;
     margin: 50px auto;
@@ -357,6 +353,32 @@ textarea {
 textarea {
     resize: vertical;
 }
+
+/* --- 画像エリア --- */
+.image-drop {
+    border: 1px dashed #ddd;
+    padding: 30px 20px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 中央寄せ */
+    justify-content: center;
+    text-align: center;
+    gap: 10px;
+}
+.file-input {
+    display: none;
+}
+.file-btn {
+    display: inline-block;
+    padding: 10px 14px;
+    border: 1px solid #e44;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.file-name {
+    opacity: 0.7;
+}
 .category-list {
     display: flex;
     flex-wrap: wrap;
@@ -380,10 +402,20 @@ textarea {
     background-color: #f33;
     color: #fff;
 }
-.required {
-    color: red;
-    font-size: 12px;
-    margin-left: 5px;
+
+/* --- 価格 --- */
+.price-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.price-prefix {
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+.price-input {
+    flex: 1;
 }
 
 .error {

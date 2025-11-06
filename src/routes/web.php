@@ -49,7 +49,7 @@ Route::middleware('auth')->group(function () {
 
     // 購入
     Route::get('/purchase/{item_id}',  [PurchaseController::class, 'create'])->name('purchase.create');
-    Route::post('/purchase/{item_id}', [PurchaseController::class, 'store'])->name('purchase.store');
+    Route::get('/purchase/{item_id}/{paymentMethod}', [PurchaseController::class, 'store'])->name('purchase.store');
 
     // 配送先
     Route::get('/purchase/address/{item_id}',   [ShippingAddressController::class, 'edit'])->name('purchase.address.edit');

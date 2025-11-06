@@ -15,9 +15,9 @@
         <div class="item-detail__body">
             {{-- 左：画像 --}}
             <div class="item-detail__media">
-                @php $imageUrl = $item->image_url ?? null; @endphp
-                @if ($imageUrl)
-                <img src="{{ $imageUrl }}" alt="{{ $item->title ?? $item->name ?? '商品画像' }}">
+                <!-- @php $image_url = $item->image_url ?? null; @endphp -->
+                @if ($image_url)
+                <img src="storage/{{ $image_url }}" alt="{{ $item->title ?? $item->name ?? '商品画像' }}">
                 @else
                 <div class="item-detail__image--placeholder">商品画像</div>
                 @endif
@@ -106,7 +106,7 @@
                             </div>
                             <div class="item-detail__prop">
                                 <dt>商品の状態</dt>
-                                <dd><span class="item-detail__chip">{{ $item->condition_label }}</span></dd>
+                                <dd><span class="item-detail__chip">{{ $item->condition }}</span></dd>
                             </div>
                         </dl>
                     </section>

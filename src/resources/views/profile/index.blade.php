@@ -45,7 +45,7 @@
                     <a href="{{ route('items.show', $item->id) }}" class="card-link">
                         <div class="thumb">
                             @if(!empty($item->image_url))
-                            <img src="{{ $item->image_url }}" alt="{{ $item->title }}" />
+                            <img src="storage/{{ $item->image_url }}" alt="{{ $item->title }}" />
                             @else
                             <div class="thumb-ph"></div>
                             @endif
@@ -67,23 +67,23 @@
             <ul class="card-grid">
                 @foreach($purchased as $pv)
                 @if($pv->item)
+                    @php $item = $pv->item; @endphp
                 <li class="card">
                     <a href="{{ route('items.show', $pv->item->id) }}" class="card-link">
                         <div class="thumb">
-                            @php $item = $pv->item; @endphp
-                            @if($item && !empty($item->image_url))
-                            <img src="{{ $item->image_url }}" alt="{{ $item->title }}" />
+                            @if (!empty($item->image_url))
+                            <img src="{{ $item->image_url }}" alt="{{ $item->title ?? $item->name }}" />
                             @else
                             <div class="thumb-ph"></div>
                             @endif
                         </div>
-                        <p class="title">{{ $pv->item->title ?? $pv->item->name }}</p>
+                        <p class="title">{{ $item->title ?? $item->name }}</p>
                     </a>
                 </li>
                 @endif
                 @endforeach
             </ul>
-            <div class="pager">{{ $purchased->onEachSide(1)->links() }}</div>
+            <div class="pager">{{ $purchased->appends(['listed_page' => request('listed_page')])->onEachSide(1)->links() }}</div>
             @else
             <p class="empty">購入した商品はまだありません。</p>
             @endif
