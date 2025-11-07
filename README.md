@@ -59,7 +59,7 @@ STRIPE_SECRET_KEY=
 
 ## ER図
 
-![ER図はこちら (flea.drawio)](flea.png)
+![ER図はこちら (flea.drawio)](src/flea.png)
 
 
 ## URL 
