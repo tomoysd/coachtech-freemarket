@@ -109,7 +109,7 @@
                             </div>
                             <div class="item-detail__prop">
                                 <dt>商品の状態</dt>
-                                <dd><span class="item-detail__chip">{{ $item->condition }}</span></dd>
+                                <dd><span class="item-detail__chip">{{ $item->condition_label }}</span></dd>
                             </div>
                         </dl>
                     </section>
