@@ -72,7 +72,7 @@
                     <a href="{{ route('items.show', $pv->item->id) }}" class="card-link">
                         <div class="thumb">
                             @if (!empty($item->image_url))
-                            <img src="{{ $item->image_url }}" alt="{{ $item->title ?? $item->name }}" />
+                            <img src="storage/{{ $item->image_url }}" alt="{{ $item->title ?? $item->name }}" />
                             @else
                             <div class="thumb-ph"></div>
                             @endif

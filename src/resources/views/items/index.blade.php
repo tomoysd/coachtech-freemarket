@@ -29,11 +29,13 @@
         <a href="{{ route('items.show', $item) }}" class="item-card {{ $item->purchases_count > 0 ? 'is-sold' : '' }}">
             <div class="thumb">
                 @if(!empty($item->image_url))
-                <img src="{{ $item->image_url }}" alt="{{ $item->title ?? $item->name }}">
+                <img src="{{ Str::startsWith($item->image_url, ['http://','https://','/storage'])
+                                ? $item->image_url
+                                : asset('storage/'.$item->image_url) }}"
+                                alt="{{ $item->title ?? $item->name }}">
                 @else
                 <span class="thumb-dummy">商品画像</span>
                 @endif
-
                 {{-- SOLDバッジ --}}
                 @if ($item->purchases_count > 0)
                 <span class="sold-badge">SOLD</span>

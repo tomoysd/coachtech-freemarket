@@ -17,7 +17,10 @@
             <div class="item-detail__media">
                 <!-- @php $image_url = $item->image_url ?? null; @endphp -->
                 @if ($image_url)
-                <img src="storage/{{ $image_url }}" alt="{{ $item->title ?? $item->name ?? '商品画像' }}">
+                <img src="{{ Str::startsWith($item->image_url, ['http://','https://','/storage'])
+                                ? $item->image_url
+                                : asset('storage/'.$item->image_url) }}" 
+                                alt="{{ $item->title ?? $item->name ?? '商品画像' }}">
                 @else
                 <div class="item-detail__image--placeholder">商品画像</div>
                 @endif

@@ -10,7 +10,10 @@
     <div class="purchase-left">
         <div class="purchase-item">
             <div class="item-image">
-                <img src="{{ $item->image_url }}" alt="商品画像">
+                <img src="{{ Str::startsWith($item->image_url, ['http://','https://','/storage'])
+                                ? $item->image_url
+                                : asset('storage/'.$item->image_url) }}" 
+                                alt="商品画像">
             </div>
             <div class="item-info">
                 <p class="item-name">{{ $item->title ?? $item->name }}</p>

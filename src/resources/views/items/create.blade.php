@@ -11,15 +11,6 @@
     <form action="{{ route('items.store') }}" method="POST" enctype="multipart/form-data" class="sell-form">
         @csrf
 
-        {{-- ✅ バリデーション全体のエラーリスト（errorBag指定） --}}
-        @if ($errors->exhibition->any())
-        <ul class="error-list">
-            @foreach ($errors->exhibition->all() as $msg)
-            <li>{{ $msg }}</li>
-            @endforeach
-        </ul>
-        @endif
-
         {{-- 商品画像 --}}
         <div class="form-group">
             <label for="image" class="required">商品画像</label>
@@ -51,7 +42,7 @@
         <div class="form-group">
             <label for="condition" class="required">商品の状態</label>
             <select id="condition" name="condition" class="select">
-                <option value="hidden">選択してください</option>
+                <option value="" selected disabled>選択してください</option>
                 @foreach ($conditions as $key => $label) {{-- $key=1..6, $label='新品・未使用' 等 --}}
                 <option value="{{ $key }}" {{ old('condition') == $key ? 'selected' : '' }}>
                     {{ $label }}
