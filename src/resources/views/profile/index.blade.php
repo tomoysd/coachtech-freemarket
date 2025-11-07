@@ -45,7 +45,10 @@
                     <a href="{{ route('items.show', $item->id) }}" class="card-link">
                         <div class="thumb">
                             @if(!empty($item->image_url))
-                            <img src="storage/{{ $item->image_url }}" alt="{{ $item->title }}" />
+                            <img src="{{ Str::startsWith($item->image_url, ['http://','https://','/storage'])
+                                            ? $item->image_url
+                                            : asset('storage/'.$item->image_url) }}" 
+                                            alt="{{ $item->title }}" />
                             @else
                             <div class="thumb-ph"></div>
                             @endif
@@ -72,7 +75,10 @@
                     <a href="{{ route('items.show', $pv->item->id) }}" class="card-link">
                         <div class="thumb">
                             @if (!empty($item->image_url))
-                            <img src="storage/{{ $item->image_url }}" alt="{{ $item->title ?? $item->name }}" />
+                            <img src="{{ Str::startsWith($item->image_url, ['http://','https://','/storage'])
+                                        ? $item->image_url
+                                        : asset('storage/'.$item->image_url) }}" 
+                                alt="{{ $item->title ?? $item->name }}" />
                             @else
                             <div class="thumb-ph"></div>
                             @endif
