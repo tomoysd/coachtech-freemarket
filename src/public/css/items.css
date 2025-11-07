@@ -438,3 +438,7 @@ textarea {
 .btn-submit:hover {
     background-color: #c00;
 }
+
+.hidden {
+    display: none;
+}

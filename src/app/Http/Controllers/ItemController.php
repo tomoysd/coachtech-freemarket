@@ -66,8 +66,9 @@ class ItemController extends Controller
             : false;
 
         $categories = $item->categories;
+        $user = Auth::user();
         $item->loadCount('purchases'); // ← これで $item->purchases_count が使える
-        return view('items.show', compact('item', 'comments', 'likesCount', 'likedByMe', 'categories'));
+        return view('items.show', compact('item', 'comments', 'likesCount', 'likedByMe', 'categories', 'user'));
     }
 
     /**

@@ -64,7 +64,7 @@
 
                     {{-- 購入導線 --}}
                     @auth
-                    @if ($item->purchases_count > 0)
+                    @if ($item->purchases_count > 0 || $item->user->id == $user->id)
                     {{-- 売り切れ表示 --}}
                     <button type="button" class="item-detail__cta item-detail__cta--disabled" disabled aria-disabled="true">
                         購入できません
